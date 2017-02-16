@@ -14,10 +14,10 @@ return [
         ],
         'commands' => [
             'CreateBlogPost' => [
-                'commandProps' => [ /* TODO */ ],
+                'commandProps' => ['blogPost', 'postedByUserId'],
                 'event' => [
                     'eventName' => 'BlogPostWasCreated',
-                    'eventProps' => [ /* TODO */ ],
+                    'eventProps' => [],
                     'projectors' => [
                         'BlogPost',
                     ],
@@ -42,7 +42,7 @@ return [
                 ],
             ],
             'AddCommentToBlogPost' => [
-                'commandProps' => [ /* TODO */ ],
+                'commandProps' => ['blogPostId', 'comment', 'commentedByUserId'],
                 'event' => [
                     'eventName' => 'CommentWasAddedToBlogPost',
                     'eventProps' => [ /* TODO */ ],
