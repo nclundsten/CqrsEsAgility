@@ -4,14 +4,22 @@ namespace CqrsEsAgility;
 
 use CqrsEsAgility\Files\FilesCollection;
 use CqrsEsAgility\Files\Command;
+use CqrsEsAgility\Files\CommandHandler;
 use CqrsEsAgility\Files\Aggregate;
+use CqrsEsAgility\Files\Event;
+use CqrsEsAgility\Files\Listener;
+use CqrsEsAgility\Files\Projector;
 use CqrsEsAgility\Files\AbstractFile;
 
 class Generate
 {
     protected $generators = [
         'command' => Command::class,
+        'command-handler' => CommandHandler::class,
         'aggregate' => Aggregate::class,
+        'event' => Event::class,
+        'listener' => Listener::class,
+        'projector' => Projector::class,
     ];
 
     private $files;
@@ -62,29 +70,23 @@ class Generate
     protected function generateCommand($commandName, array $commandConfig)
     {
         $this->getGenerator('command')->addCommand($commandName, $commandConfig['commandProps']);
-
-        $this->getGenerator('aggregate')->addAggregateCommand($this->namespace, $commandName);
-        return;
-
-        $this->files->addAggregateCommand($this->namespace, $commandName);
-
-        if (isset($commandConfig['commandProps']) && count($commandConfig['commandProps'])) {
-            /* @TODO */
-        }
+        $this->getGenerator('aggregate')->addAggregateCommand($commandConfig['aggregateName'], $commandName);
 
         if (isset($commandConfig['event']) && is_array($commandConfig['event'])) {
             $eventName = $commandConfig['event']['eventName'];
-            $this->generateEvent($eventName, $commandConfig['event']);
-            $this->files->addCommandHandler($commandName, $eventName);
+            $this->generateEvent($eventName, $commandConfig['aggregateName'], $commandConfig['event']);
+            /* @var \CqrsEsAgility\Files\CommandHandler $ch */
+            $ch = $this->getGenerator('command-handler');
+            $ch->addCommandHandler();
         } else {
-            $this->files->addCommandHandler($commandName);
+            //$this->files->addCommandHandler($commandName);
         }
     }
 
-    protected function generateEvent($eventName, array $eventConfig)
+    protected function generateEvent($eventName, $aggregateName, array $eventConfig)
     {
-        $this->files->addEvent($eventName);
-        $this->files->addAggregateEvent($this->namespace, $eventName);
+        $this->getGenerator('event')->addEvent($eventName, $eventConfig['eventProps']);
+        $this->getGenerator('aggregate')->addAggregateEvent($aggregateName, $eventName);
 
         if (isset($eventConfig['listeners']) && count($eventConfig['listeners'])) {
             foreach ($eventConfig['listeners'] as $listenerName => $listenerConfig) {
@@ -100,7 +102,7 @@ class Generate
 
     protected function generateEventListener($eventName, $listenerName, $listenerConfig)
     {
-        $this->files->addEventListener($eventName, $listenerName);
+        $this->getGenerator('listener')->addListener($eventName, $listenerName);
 
         if (isset($listenerConfig['commands']) && count($listenerConfig['commands'])) {
             foreach ($listenerConfig['commands'] as $commandName => $commandConfig) {
@@ -111,7 +113,7 @@ class Generate
 
     function generateEventProjector($projectorName, $eventName)
     {
-        $this->files->addProjector($projectorName, $eventName);
+        $this->getGenerator('projector')->addProjector($projectorName, $eventName);
     }
 }
 
