@@ -1,0 +1,48 @@
+{
+  "name": "agile-cqrs-es",
+  "description": "generate common files in cqrs + es",
+  "license": "",
+  "keywords": [
+    "cqrs",
+    "es",
+    "generate",
+    "agile"
+  ],
+  "homepage": "http://github.com/nclundsten/es",
+  "autoload": {
+    "psr-4": {
+        "CqrsEsAgility\\": "module/CqrsEsAgility/src/"
+    }
+  },
+  "require": {
+    "php": "^7.0.0",
+    "prooph/event-sourcing": "^4.0",
+    "prooph/event-store": "^6.5",
+    "prooph/event-store-bus-bridge": "^2.0",
+    "prooph/service-bus": "^5.2",
+    "nikic/php-parser" : "dev-master",
+    "zendframework/zend-code" : "dev-master"
+  },
+  "require-dev": {
+    "phpunit/PHPUnit": "^4.8.21"
+  },
+  "suggest": {
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload-dev": {
+    "psr-4": {
+    }
+  },
+  "scripts": {
+    "check": [
+      "@cs-check",
+      "@test"
+    ],
+    "upload-coverage": "coveralls -v",
+    "cs-check": "phpcs",
+    "cs-fix": "phpcbf",
+    "test": "phpunit --colors=always",
+    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+  }
+}
