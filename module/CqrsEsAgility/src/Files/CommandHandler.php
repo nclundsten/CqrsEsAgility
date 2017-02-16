@@ -8,16 +8,23 @@ use Zend\Code\Generator\DocBlock\Tag;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
-use Prooph\Common\Messaging\Command as ProophCommand;
 
 class CommandHandler extends AbstractFile
 {
     protected $namespaces = [
         'command-handler' => 'Infrastructure\\CommandHandler',
     ];
+    protected $classNameAppend = [
+        'command-handler' => 'Handler',
+    ];
 
-    public function addCommandHandler()
+    public function addCommandHandler($commandName)
     {
+        /* @var ClassGenerator $class */
+        $class = $this->getFile($this->formatClassName($commandName, 'command-handler'));
+
+        $class->setNamespaceName($this->getNamespace('command-handler'));
+        $class->setFinal(true);
 
     }
 }
