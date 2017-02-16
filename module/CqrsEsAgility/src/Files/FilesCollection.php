@@ -10,10 +10,9 @@ class FilesCollection
 
     public function getFile($name) : ClassGenerator
     {
-        $class = new ClassGenerator();
-        $class->setName($name);
-
         if (!isset($this->classes[$name])) {
+            $class = new ClassGenerator();
+            $class->setName($name);
             $this->classes[$name] = $class;
         }
 
