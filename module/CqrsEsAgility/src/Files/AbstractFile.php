@@ -39,13 +39,12 @@ abstract class AbstractFile
 
     public function getNamespace($type)
     {
-        return $this->namespaces[$type];
+        return $this->baseNamespace . '\\' . $this->namespaces[$type];
     }
 
     public function getFqcn($name, $type)
     {
-        return $this->baseNamespace
-            . '\\' . $this->getNamespace($type)
+        return $this->getNamespace($type)
             . '\\' . $this->formatClassName($name, $type);
     }
 
