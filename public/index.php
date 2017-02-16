@@ -18,7 +18,7 @@ if (file_exists('vendor/autoload.php')) {
 }
 
 //$config = include('config/sample.product.catalog.config.php');
-$config = require 'config/sample.blog.config.php';
+$config = require 'config/sample.hockey.config.php';
 
 foreach ($config as $namespace => $structure) {
     $gen = new \CqrsEsAgility\Generate($namespace, $structure);

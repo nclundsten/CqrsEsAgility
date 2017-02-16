@@ -12,6 +12,10 @@ use Prooph\Common\Messaging\Command as ProophCommand;
 
 class Command extends AbstractFile
 {
+    protected $namespaces = [
+        'command' => 'Domain\\Command',
+    ];
+
     public function addCommand($commandName, $commandProps)
     {
         /* @var ClassGenerator $class */
@@ -20,8 +24,9 @@ class Command extends AbstractFile
         $class->setNamespaceName($this->getNamespace('command'));
         $class->addUse(ProophCommand::class);
         $class->setExtendedClass(ProophCommand::class);
-        $class->setFinal(1);
+        $class->setFinal(true);
 
+        //class properties
         foreach ($commandProps as $propName) {
             $class->addPropertyFromGenerator(
                 PropertyGenerator::fromArray([
@@ -40,11 +45,13 @@ class Command extends AbstractFile
             );
         }
 
+        //__construct()
         $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => '__construct',
             'body' => "\$this->init();",
         ]));
 
+        //fromDetails(...)
         $body = "\$instance = new self();\n";
         $body .= "\n";
         foreach ($commandProps as $propName) {
@@ -52,13 +59,12 @@ class Command extends AbstractFile
         }
         $body .= "\n";
         $body .= "return \$instance;";
-
-        $fromDetails = new MethodGenerator(
-            'fromDetails',
-            $commandProps,
-            MethodGenerator::FLAG_PUBLIC,
-            $body,
-            DocBlockGenerator::fromArray(array(
+        $class->addMethodFromGenerator(MethodGenerator::fromArray([
+            'name' => 'fromDetails',
+            'parameters' => $commandProps,
+            'visibility' => MethodGenerator::FLAG_PUBLIC,
+            'body' => $body,
+            'docBlock' => DocBlockGenerator::fromArray(array(
                 'shortDescription' => '',
                 'longDescription'  => null,
                 'tags'             => array(
@@ -66,11 +72,11 @@ class Command extends AbstractFile
                     //    'datatype'  => 'string|null',
                     //)),
                 ),
-            ))
-        );
-        $fromDetails->setReturnType($this->getFqcn($commandName, 'command'));
-        $class->addMethodFromGenerator($fromDetails);
+            )),
+            'returnType' => $this->getFqcn($commandName, 'command'),
+        ]));
 
+        //getters
         foreach ($commandProps as $propName) {
             $methodGen = new MethodGenerator(
                 $propName,
@@ -81,17 +87,18 @@ class Command extends AbstractFile
             $class->addMethodFromGenerator($methodGen);
         }
 
+        //payload()
         $body = "return [\n";
         foreach ($commandProps as $propName) {
             $body .= "    '" . $propName .  "' => \$this->" . $propName . "(),\n";
         }
         $body .= "];\n";
-        $payload = new MethodGenerator(
-            'payload',
-            array(),
-            MethodGenerator::FLAG_PUBLIC,
-            $body,
-            DocBlockGenerator::fromArray(array(
+        $class->addMethodFromGenerator(MethodGenerator::fromArray([
+            'name' => 'payload',
+            'parameters' => array(),
+            'visibility' =>MethodGenerator::FLAG_PUBLIC,
+            'body' => $body,
+            'docBlock' => DocBlockGenerator::fromArray(array(
                 'shortDescription' => '',
                 'longDescription'  => null,
                 'tags'             => array(
@@ -99,16 +106,16 @@ class Command extends AbstractFile
                     //    'datatype'  => 'string|null',
                     //)),
                 ),
-            ))
-        );
-        $payload->setReturnType('array');
-        $class->addMethodFromGenerator($payload);
+            )),
+            'returnType' => 'array',
+        ]));
 
+        //setPayload(array $payload)
         $body = '';
         foreach ($commandProps as $propName) {
             $body .= "\$this->" . $propName . " = \$payload['" . $propName . "'];\n";
         }
-        $setPayload = MethodGenerator::fromArray([
+        $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => 'setPayload',
             'body' => $body,
             'visibility' => MethodGenerator::VISIBILITY_PROTECTED,
@@ -127,8 +134,7 @@ class Command extends AbstractFile
                     //)),
                 ),
             ))
-        ]);
-        $class->addMethodFromGenerator($setPayload);
+        ]));
 
         /* @TODO generate some test files!! */
     }

@@ -11,19 +11,9 @@ abstract class AbstractFile
     protected $files;
 
     protected $namespaces = [
-        'command' => 'Domain\\Command',
-        'event' => 'Domain\\DomainEvent',
-        'aggregate' => 'Domain\\Aggregate',
-        'commandHandler' => 'Infrastructure\\CommandHandler',
-        'listener' => 'Infrastructure\\EventListener',
-        'projector' => 'Infrastructure\\Projector',
     ];
 
     protected $classNameAppend = [
-        'aggregate' => 'Aggregate',
-        'listener' => 'Listener',
-        'commandHandler' => 'Handler',
-        'projector' => 'Projector',
     ];
 
     public function __construct($namespace, FilesCollection $files)
