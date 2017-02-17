@@ -18,13 +18,12 @@ class CommandHandler extends AbstractFile
         'command-handler' => 'Handler',
     ];
 
-    public function addCommandHandler($commandName)
+    public function addCommandHandler($commandName, $eventName=null)
     {
         /* @var ClassGenerator $class */
         $class = $this->getFile($this->formatClassName($commandName, 'command-handler'));
 
         $class->setNamespaceName($this->getNamespace('command-handler'));
         $class->setFinal(true);
-
     }
 }

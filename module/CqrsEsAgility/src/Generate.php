@@ -10,6 +10,7 @@ use CqrsEsAgility\Files\Event;
 use CqrsEsAgility\Files\Listener;
 use CqrsEsAgility\Files\Projector;
 use CqrsEsAgility\Files\AbstractFile;
+use Zend\Code\Generator\ClassGenerator;
 
 class Generate
 {
@@ -62,7 +63,12 @@ class Generate
 
         $files = $this->files->getFiles();
         foreach ($files as $file) {
-            echo $file->generate();
+            /* @var ClassGenerator $file */
+            $dir = 'generated' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $file->getNamespaceName());
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            file_put_contents($dir . DIRECTORY_SEPARATOR . $file->getName() . '.php', $file->generate());
         }
         echo count($files) . ' Files Generated';
     }
@@ -72,14 +78,14 @@ class Generate
         $this->getGenerator('command')->addCommand($commandName, $commandConfig['commandProps']);
         $this->getGenerator('aggregate')->addAggregateCommand($commandConfig['aggregateName'], $commandName);
 
+        /* @var \CqrsEsAgility\Files\CommandHandler $commandHandlerGen */
+        $commandHandlerGen = $this->getGenerator('command-handler');
         if (isset($commandConfig['event']) && is_array($commandConfig['event'])) {
             $eventName = $commandConfig['event']['eventName'];
             $this->generateEvent($eventName, $commandConfig['aggregateName'], $commandConfig['event']);
-            /* @var \CqrsEsAgility\Files\CommandHandler $ch */
-            $ch = $this->getGenerator('command-handler');
-            $ch->addCommandHandler();
+            $commandHandlerGen->addCommandHandler($commandName, $eventName);
         } else {
-            //$this->files->addCommandHandler($commandName);
+            $commandHandlerGen->addCommandHandler($commandName);
         }
     }
 

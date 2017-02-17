@@ -14,14 +14,15 @@ class Listener extends AbstractFile
 {
     protected $namespaces = [
         'listener' => 'Infrastructure\\EventListener',
+        'listener-factory' => 'Listener\\Factory'
     ];
     protected $classNameAppend = [
         'listener' => 'Listener',
     ];
 
-    public function addAggregateCommand($aggregateName, $commandName)
+    public function addListener($listenerName)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getFile($this->formatClassName($aggregateName, 'aggregate'));
+        $class = $this->getFile($this->formatClassName($listenerName, 'listener'));
     }
 }

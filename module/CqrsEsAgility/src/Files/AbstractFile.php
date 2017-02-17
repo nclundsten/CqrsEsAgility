@@ -27,6 +27,11 @@ abstract class AbstractFile
         return $this->files->getFile($name);
     }
 
+    protected function createFile($name)
+    {
+        return $this->files->createFile($name);
+    }
+
     public function getNamespace($type)
     {
         return $this->baseNamespace . '\\' . $this->namespaces[$type];

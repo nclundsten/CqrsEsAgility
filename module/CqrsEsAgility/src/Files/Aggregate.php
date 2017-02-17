@@ -13,7 +13,7 @@ use Prooph\EventSourcing\AggregateRoot as ProophAggregate;
 class Aggregate extends AbstractFile
 {
     protected $namespaces = [
-        'event' => 'Domain\\Event',
+        'event' => 'Domain\\DomainEvent',
         'aggregate' => 'Domain\\Aggregate',
         'aggregate-repo-interface' => 'Domain\\Repository',
         'aggregate-repo' => 'Infrastructure\\Repository',

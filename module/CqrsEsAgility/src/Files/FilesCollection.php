@@ -11,10 +11,21 @@ class FilesCollection
     public function getFile($name) : ClassGenerator
     {
         if (!isset($this->classes[$name])) {
-            $class = new ClassGenerator();
-            $class->setName($name);
-            $this->classes[$name] = $class;
+            $this->createFile($name);
         }
+
+        return $this->classes[$name];
+    }
+
+    public function createFile($name) : ClassGenerator
+    {
+        if (isset($this->classes[$name])) {
+            throw new \Exception('file already created: ' . $name);
+        }
+
+        $class = new ClassGenerator();
+        $class->setName($name);
+        $this->classes[$name] = $class;
 
         return $this->classes[$name];
     }

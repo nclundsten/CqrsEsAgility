@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'Hockey' => [
+    'HockeyTracker' => [
         'actions' => [
             'AddPlayer',
             'AddTeam',
@@ -30,6 +30,7 @@ return [
                 ],
             ],
             'CreateTeam' => [
+                'aggregateName' => 'Team',
                 'commandProps' => ['teamName'],
                 'event' => [
                     'eventName' => 'TeamWasCreated',
@@ -42,6 +43,7 @@ return [
                 ],
             ],
             'AddPlayerToTeam' => [
+                'aggregateName' => 'TeamPlayer',
                 'commandProps' => ['playerId', 'teamId'],
                 'event' => [
                     'eventName' => 'PlayerWasAddedToTeam',
@@ -54,6 +56,7 @@ return [
                 ],
             ],
             'ScheduleGame' => [
+                'aggregateName' => 'ScheduledGame',
                 'commandProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime'],
                 'event' => [
                     'eventName' => 'GameWasScheduled',
@@ -66,6 +69,7 @@ return [
                 ],
             ],
             'StartGame' => [
+                'aggregateName' => 'Game',
                 'commandProps' => ['scheduledGameId', 'startedDateTime'],
                 'event' => [
                     'eventName' => 'GameWasStarted',
@@ -77,7 +81,21 @@ return [
                     ],
                 ],
             ],
+            'EndGame' => [
+                'aggregateName' => 'Game',
+                'commandProps' => ['gameId'],
+                'event' => [
+                    'eventName' => 'GameWasEnded',
+                    'eventProps' => ['gameId', 'dateTime'],
+                    'projectors' => [
+                        'Game',
+                    ],
+                    'listeners' => [
+                    ],
+                ],
+            ],
             'AddPointsForTeamInGame' => [
+                'aggregateName' => 'Game',
                 'commandProps' => ['gameId', 'teamId', 'points'],
                 'event' => [
                     'eventName' => 'PointsForTeamInGameWereAdded',
@@ -89,21 +107,10 @@ return [
                     ],
                 ],
             ],
-            'EndGame' => [
-                'commandProps' => ['gameId'],
-                'event' => [
-                    'eventName' => 'PointsForTeamInGameWereAdded',
-                    'eventProps' => ['gameId', 'dateTime'],
-                    'projectors' => [
-                        'Game',
-                    ],
-                    'listeners' => [
-                    ],
-                ],
-            ],
 
             /* modifications */
             'RemovePlayerFromTeam' => [
+                'aggregateName' => 'TeamPlayer',
                 'commandProps' => ['playerId', 'teamId'],
                 'event' => [
                     'eventName' => 'PlayerWasRemovedFromTeam',
@@ -116,10 +123,11 @@ return [
                 ],
             ],
             'RescheduleGame' => [
+                'aggregateName' => 'ScheduledGame',
                 'commandProps' => ['scheduledGameId', 'homeTeamId', 'awayTeamId', 'newScheduledDateTime'],
                 'event' => [
                     'eventName' => 'GameWasRescheduled',
-                    'eventProps' => [],
+                    'eventProps' => ['scheduledGameId', 'homeTeamId', 'awayTeamId', 'newScheduledDateTime'],
                     'projectors' => [
                         'GameSchedule',
                     ],
@@ -128,10 +136,11 @@ return [
                 ],
             ],
             'CancelScheduledGame' => [
+                'aggregateName' => 'ScheduledGame',
                 'commandProps' => ['scheduledGameId', 'reason'],
                 'event' => [
-                    'eventName' => 'GameWasScheduled',
-                    'eventProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime', 'dateTime'],
+                    'eventName' => 'GameWasCancelled',
+                    'eventProps' => ['ScheduledGameId', 'reason'],
                     'projectors' => [
                         'GameSchedule',
                     ],
