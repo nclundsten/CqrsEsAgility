@@ -34,7 +34,7 @@ return [
                 'commandProps' => ['teamName'],
                 'event' => [
                     'eventName' => 'TeamWasCreated',
-                    'eventProps' => ['teamName', 'createdDateTime'],
+                    'eventProps' => ['teamName'],
                     'projectors' => [
                         'Team',
                     ],
@@ -60,7 +60,7 @@ return [
                 'commandProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime'],
                 'event' => [
                     'eventName' => 'GameWasScheduled',
-                    'eventProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime', 'dateTime'],
+                    'eventProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime'],
                     'projectors' => [
                         'GameSchedule',
                     ],
@@ -70,10 +70,10 @@ return [
             ],
             'StartGame' => [
                 'aggregateName' => 'Game',
-                'commandProps' => ['scheduledGameId', 'startedDateTime'],
+                'commandProps' => ['scheduledGameId'],
                 'event' => [
                     'eventName' => 'GameWasStarted',
-                    'eventProps' => [],
+                    'eventProps' => ['scheduledGameId'],
                     'projectors' => [
                         'Game',
                     ],
@@ -99,7 +99,7 @@ return [
                 'commandProps' => ['gameId', 'teamId', 'points'],
                 'event' => [
                     'eventName' => 'PointsForTeamInGameWereAdded',
-                    'eventProps' => ['gameId', 'teamId', 'points', 'dateTime'],
+                    'eventProps' => ['gameId', 'teamId', 'points'],
                     'projectors' => [
                         'Game',
                     ],
@@ -114,7 +114,7 @@ return [
                 'commandProps' => ['playerId', 'teamId'],
                 'event' => [
                     'eventName' => 'PlayerWasRemovedFromTeam',
-                    'eventProps' => ['playerId', 'removedDateTime'],
+                    'eventProps' => ['playerId'],
                     'projectors' => [
                         'TeamPlayer',
                     ],
