@@ -47,7 +47,7 @@ class Generate extends AbstractGenerate
     {
         $this->command->addCommand($commandName, $commandConfig['commandProps']);
         if (isset($commandConfig['aggregateName'])) {
-            $this->aggregate->addAggregateCommand($commandConfig['aggregateName'], $commandName);
+            $this->aggregate->addAggregateCommand($commandConfig['aggregateName'], $commandName, $commandConfig['commandProps']);
         }
 
         if (isset($commandConfig['event']) && is_array($commandConfig['event'])) {
