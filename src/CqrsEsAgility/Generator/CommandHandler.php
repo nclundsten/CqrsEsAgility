@@ -1,6 +1,6 @@
 <?php
 
-namespace CqrsEsAgility\Files;
+namespace CqrsEsAgility\Generator;
 
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -11,13 +11,6 @@ use Zend\Code\Generator\ParameterGenerator;
 
 class CommandHandler extends AbstractFile
 {
-    protected $namespaces = [
-        'command-handler' => 'Infrastructure\\CommandHandler',
-    ];
-    protected $classNameAppend = [
-        'command-handler' => 'Handler',
-    ];
-
     public function addCommandHandler($commandName, $eventName=null)
     {
         /* @var ClassGenerator $class */

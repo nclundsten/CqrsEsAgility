@@ -1,6 +1,6 @@
 <?php
 
-namespace CqrsEsAgility\Files;
+namespace CqrsEsAgility\Generator;
 
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -12,10 +12,6 @@ use Prooph\EventSourcing\AggregateChanged as ProophEvent;
 
 class Event extends AbstractFile
 {
-    protected $namespaces = [
-        'event' => 'Domain\\DomainEvent',
-    ];
-
     public function addEvent($eventName, array $eventProps)
     {
         /* @var ClassGenerator $class */
@@ -24,16 +20,6 @@ class Event extends AbstractFile
         $class->addUse(ProophEvent::class);
         $class->setExtendedClass(ProophEvent::class);
         $class->setFinal(true);
-
-        foreach ($eventProps as $propName) {
-            $methodGen = new MethodGenerator(
-                $propName,
-                array(),
-                MethodGenerator::FLAG_PUBLIC,
-                "return \$this->payload['" . $propName . "'];"
-            );
-            $class->addMethodFromGenerator($methodGen);
-        }
 
         //withDetails(...)
         $propList = (array) $eventProps;
@@ -61,5 +47,15 @@ class Event extends AbstractFile
             )),
             'returnType' => $this->getFqcn($eventName, 'event'),
         ]));
+
+        foreach ($eventProps as $propName) {
+            $methodGen = new MethodGenerator(
+                $propName,
+                array(),
+                MethodGenerator::FLAG_PUBLIC,
+                "return \$this->payload['" . $propName . "'];"
+            );
+            $class->addMethodFromGenerator($methodGen);
+        }
     }
 }

@@ -1,23 +1,27 @@
 <?php
 
-namespace CqrsEsAgility\Files;
+namespace CqrsEsAgility\Generator;
+
 use CqrsEsAgility\Files\FilesCollection;
 
 abstract class AbstractFile
 {
+    /* @var string */
     private $baseNamespace;
 
     /* @var FilesCollection $files */
     protected $files;
 
-    protected $namespaces = [
-    ];
+    /* @var array */
+    protected $namespaces = [ /* set during construct */ ];
 
-    protected $classNameAppend = [
-    ];
+    /* @var array */
+    protected $classNameAppend = [ /* set during construct */];
 
-    public function __construct($namespace, FilesCollection $files)
+    public function __construct(array $config, $namespace, FilesCollection $files)
     {
+        $this->namespaces = $config['namespaces'];
+        $this->classNameAppend = $config['class-name-append'];
         $this->baseNamespace = $namespace;
         $this->files = $files;
     }

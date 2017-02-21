@@ -65,6 +65,14 @@ return [
                         'GameSchedule',
                     ],
                     'listeners' => [
+                        //team has a game scheduled at "home"
+                        'NotifyHomeTeamFollowersOfScheduledGame' => [
+                            'commands' => [
+                                'NotifyHomeTeamFollowersOfScheduledGame' => [
+                                    'commandProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime'],
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],

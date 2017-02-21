@@ -1,6 +1,6 @@
 <?php
 
-namespace CqrsEsAgility\Files;
+namespace CqrsEsAgility\Generator;
 
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -12,10 +12,6 @@ use Prooph\Common\Messaging\Command as ProophCommand;
 
 class Command extends AbstractFile
 {
-    protected $namespaces = [
-        'command' => 'Domain\\Command',
-    ];
-
     public function addCommand($commandName, $commandProps)
     {
         /* @var ClassGenerator $class */

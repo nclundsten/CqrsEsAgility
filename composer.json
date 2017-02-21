@@ -11,7 +11,7 @@
   "homepage": "http://github.com/nclundsten/es",
   "autoload": {
     "psr-4": {
-        "CqrsEsAgility\\": "module/CqrsEsAgility/src/"
+        "CqrsEsAgility\\": "src/CqrsEsAgility"
     }
   },
   "require": {
@@ -39,9 +39,6 @@
       "@cs-check",
       "@test"
     ],
-    "upload-coverage": "coveralls -v",
-    "cs-check": "phpcs",
-    "cs-fix": "phpcbf",
     "test": "phpunit --colors=always",
     "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
   }

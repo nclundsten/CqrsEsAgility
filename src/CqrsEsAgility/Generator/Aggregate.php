@@ -1,6 +1,6 @@
 <?php
 
-namespace CqrsEsAgility\Files;
+namespace CqrsEsAgility\Generator;
 
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\DocBlockGenerator;
@@ -12,17 +12,6 @@ use Prooph\EventSourcing\AggregateRoot as ProophAggregate;
 
 class Aggregate extends AbstractFile
 {
-    protected $namespaces = [
-        'event' => 'Domain\\DomainEvent',
-        'aggregate' => 'Domain\\Aggregate',
-        'aggregate-repo-interface' => 'Domain\\Repository',
-        'aggregate-repo' => 'Infrastructure\\Repository',
-    ];
-
-    protected $classNameAppend = [
-        'aggregate' => 'Aggregate',
-    ];
-
     public function addAggregateCommand($aggregateName, $commandName)
     {
         /* @var ClassGenerator $class */
