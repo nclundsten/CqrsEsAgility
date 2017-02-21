@@ -7,7 +7,7 @@
         'aggregate-repo-interface' => 'Domain\\Repository',
         'aggregate-repo' => 'Infrastructure\\Repository',
         'listener' => 'Infrastructure\\EventListener',
-        'listener-factory' => 'Listener\\Factory',
+        'listeners-factory' => 'Factory\\Listener',
         'projector' => 'Infrastructure\\Projector',
     ],
     'class-name-append' => [
@@ -15,5 +15,6 @@
         'projector' => 'Projector',
         'command-handler' => 'Handler',
         'listener' => 'Listener',
+        'listeners-factory' => 'ListenersFactory',
     ],
 ];

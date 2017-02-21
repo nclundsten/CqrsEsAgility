@@ -10,6 +10,8 @@ use CqrsEsAgility\Generator\Listener;
 use CqrsEsAgility\Generator\Projector;
 use CqrsEsAgility\Files\FilesCollection;
 
+use Zend\Code\Generator\ClassGenerator;
+
 abstract class AbstractGenerate
 {
     /* @var FilesCollection */
@@ -49,5 +51,24 @@ abstract class AbstractGenerate
         $this->event = $event;
         $this->listener = $listener;
         $this->projector = $projector;
+    }
+
+    protected function generate()
+    {
+        $files = $this->files->getFiles();
+        foreach ($files as $file) {
+            /* @var ClassGenerator $file */
+            $dir = 'generated' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $file->getNamespaceName());
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            $content = "<?php\n";
+            $content .= "declare(strict_types=1);\n";
+            $content .= "\n";
+            $content .= $file->generate();
+
+            file_put_contents($dir . DIRECTORY_SEPARATOR . $file->getName() . '.php', $content);
+        }
+        echo count($files) . ' Files Generated';
     }
 }

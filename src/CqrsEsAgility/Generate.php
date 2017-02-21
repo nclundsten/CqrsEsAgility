@@ -2,14 +2,6 @@
 
 namespace CqrsEsAgility;
 
-use CqrsEsAgility\Generator\Command;
-use CqrsEsAgility\Generator\CommandHandler;
-use CqrsEsAgility\Generator\Aggregate;
-use CqrsEsAgility\Generator\Event;
-use CqrsEsAgility\Generator\Listener;
-use CqrsEsAgility\Generator\Projector;
-use CqrsEsAgility\Generator\AbstractFile;
-use Zend\Code\Generator\ClassGenerator;
 
 class Generate extends AbstractGenerate
 {
@@ -23,24 +15,9 @@ class Generate extends AbstractGenerate
             }
         } else {
             throw new \Exception('no files to generate');
-
         }
 
-        $files = $this->files->getFiles();
-        foreach ($files as $file) {
-            /* @var ClassGenerator $file */
-            $dir = 'generated' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $file->getNamespaceName());
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
-            }
-            $content = "<?php\n";
-            $content .= "declare(strict_types=1);\n";
-            $content .= "\n";
-            $content .= $file->generate();
-
-            file_put_contents($dir . DIRECTORY_SEPARATOR . $file->getName() . '.php', $content);
-        }
-        echo count($files) . ' Files Generated';
+        parent::generate();
     }
 
     protected function addCommand($commandName, array $commandConfig)
