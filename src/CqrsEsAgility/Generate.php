@@ -33,7 +33,12 @@ class Generate extends AbstractGenerate
             if (!is_dir($dir)) {
                 mkdir($dir, 0777, true);
             }
-            file_put_contents($dir . DIRECTORY_SEPARATOR . $file->getName() . '.php', $file->generate());
+            $content = "<?php\n";
+            $content .= "declare(strict_types=1);\n";
+            $content .= "\n";
+            $content .= $file->generate();
+
+            file_put_contents($dir . DIRECTORY_SEPARATOR . $file->getName() . '.php', $content);
         }
         echo count($files) . ' Files Generated';
     }
