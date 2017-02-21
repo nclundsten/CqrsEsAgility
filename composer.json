@@ -21,7 +21,8 @@
     "prooph/event-store-bus-bridge": "^2.0",
     "prooph/service-bus": "^5.2",
     "nikic/php-parser" : "dev-master",
-    "zendframework/zend-code" : "dev-master"
+    "zendframework/zend-code" : "dev-master",
+    "container-interop/container-interop" : "^1.2.0"
   },
   "require-dev": {
     "phpunit/PHPUnit": "^4.8.21"

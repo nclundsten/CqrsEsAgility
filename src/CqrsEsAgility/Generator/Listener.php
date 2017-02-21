@@ -9,6 +9,7 @@ use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Prooph\ServiceBus\CommandBus;
+use Interop\Container\ContainerInterface;
 
 class Listener extends AbstractFile
 {
@@ -69,12 +70,81 @@ class Listener extends AbstractFile
                 ),
             )),
         ]));
+
+        $this->addListenerToListenersFactory($eventName, $listenerName, $listenerConfig['commands']);
     }
 
-    protected function addListenerToListenersFactory($eventName, $listenerName)
+    private function addListenerToListenersFactory($eventName, $listenerName, array $commands)
     {
-        //create listeners factory
-        //create "listeners" class
-        //@TODO create the "Listeners" class for the event name, create the factory, add the specific listener
+        $class = $this->getFile($this->getFqcn($eventName, 'listeners-factory'));
+        $class->addUse($this->getFqcn($listenerName, 'listener'));
+        $class->addUse(ContainerInterface::class);
+
+        if (count($commands)) {
+            $class->addUse(CommandBus::class);
+        }
+
+        if (false == $class->hasMethod('__invoke')) {
+            //TODO add the listener
+            $body = "return [\n";
+            $body .= "];";
+            $class->addMethodFromGenerator(MethodGenerator::fromArray([
+                'name' => '__invoke',
+                'parameters' => [
+                    ParameterGenerator::fromArray([
+                        'name' => 'container',
+                        'type' => ContainerInterface::class,
+                    ]),
+                ],
+                'visibility' => MethodGenerator::FLAG_PUBLIC,
+                'body' => $body,
+                'docBlock' => DocBlockGenerator::fromArray(array(
+                    'shortDescription' => '',
+                    'longDescription'  => null,
+                    'tags'             => array(
+                        //new Tag\ReturnTag(array(
+                        //    'datatype'  => 'string|null',
+                        //)),
+                    ),
+                )),
+            ]));
+        }
+        $this->addListenerToInvokeBody($class, $listenerName, count($commands));
+    }
+
+
+    /**
+     * sorry this is hacky
+     * @TODO: find a better way to modify the method body ad-hoc
+     *   return [
+     *      SomeListener(
+     *          $container->get(CommandBus::class)
+     *      ),
+     *
+     *      //THIS WILL BE ADDED
+     *
+     *      YourNewListener(
+     *          $container->get(CommandBus::class)
+     *      ),
+     *
+     *   ];
+     *
+     */
+    private function addListenerToInvokeBody(ClassGenerator $listenersClass, $listenerName, $commandBus = false)
+    {
+        $method = $listenersClass->getMethod('__invoke');
+        $bodySplit = explode("\n", $method->getBody());
+        //pop the end off (closes array)
+        $end = array_pop($bodySplit);
+        if ($commandBus) {
+            $bodySplit[] = "    " . "new " . $this->formatClassName($listenerName, 'listener') ."(";
+            $bodySplit[] = "    " . "    " . "\$container->get(CommandBus::class)";
+            $bodySplit[] = "    " . "),";
+        } else {
+            $bodySplit[] = "    " . "new " . $this->formatClassName($listenerName, 'listener') ."(),";
+        }
+        $bodySplit[] = $end;
+        //set to the new body (with the added listener)
+        $method->setBody(implode("\n", $bodySplit));
     }
 }
