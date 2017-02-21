@@ -15,8 +15,7 @@ class Aggregate extends AbstractFile
     public function addAggregateCommand($aggregateName, $commandName)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getFile($this->formatClassName($aggregateName, 'aggregate'));
-        $class->setNamespaceName($this->getNamespace('aggregate'));
+        $class = $this->getFile($this->getFqcn($aggregateName, 'aggregate'));
         $class->addUse(ProophAggregate::class);
         $class->setExtendedClass(ProophAggregate::class);
         $class->setFinal(1);

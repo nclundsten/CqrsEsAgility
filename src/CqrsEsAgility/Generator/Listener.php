@@ -8,21 +8,42 @@ use Zend\Code\Generator\DocBlock\Tag;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
+use Prooph\ServiceBus\CommandBus;
 
 class Listener extends AbstractFile
 {
     public function addEventListener($eventName, $listenerName, $listenerConfig)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getFile($this->formatClassName($listenerName, 'listener'));
-        $class->setNamespaceName($this->getNamespace('listener'));
+        $class = $this->getFile($this->getFqcn($listenerName, 'listener'));
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->setFinal(1);
 
-        if (isset ($listenerConfig['commands'])) {
-            // @TODO : add the commandbus
-            // @TODO : use the commandbus to fire off the command
-            $body = '/* @TODO : use commandbus to fire off command */';
+
+        if (isset($listenerConfig['commands'])) {
+            $class->addPropertyFromGenerator(PropertyGenerator::fromArray([
+                'name' => 'commandBus',
+            ]));
+            $class->addUse(CommandBus::class);
+            //__construct()
+            $class->addMethodFromGenerator(MethodGenerator::fromArray([
+                'name' => '__construct',
+                'parameters' => [
+                    ParameterGenerator::fromArray([
+                        'name' => 'commandBus',
+                        'type' => CommandBus::class,
+                    ]),
+                ],
+                'body' => "\$this->commandBus = \$commandBus;",
+            ]));
+
+            $body = "// @NOTE: fetch the params needed for the command below\n";
+            foreach ($listenerConfig['commands'] as $commandName => $command) {
+                $class->addUse($this->getFqcn($commandName, 'command'));
+                $body .= "\$this->commandBus->dispatch(" . $this->formatClassName($commandName, 'command') . "::fromDetails(\n";
+                $body .= "    $" . implode(", \n    $", $command['commandProps']) . "\n";
+                $body .= "));\n";
+            }
         } else {
             // we dont know what they wanted to do
             $body = '/* no commands were configured - add your custom code to make it happen */';
@@ -52,6 +73,8 @@ class Listener extends AbstractFile
 
     protected function addListenerToListenersFactory($eventName, $listenerName)
     {
+        //create listeners factory
+        //create "listeners" class
         //@TODO create the "Listeners" class for the event name, create the factory, add the specific listener
     }
 }

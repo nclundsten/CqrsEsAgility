@@ -14,8 +14,7 @@ class Projector extends AbstractFile
     public function addProjector($projectorName, $eventName)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getFile($this->formatClassName($projectorName, 'projector'));
-        $class->setNamespaceName($this->getNamespace('projector'));
+        $class = $this->getFile($this->getFqcn($projectorName, 'projector'));
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->setFinal(1);
 
