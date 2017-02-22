@@ -50,6 +50,7 @@ class Listener extends AbstractFile
             $body = '/* no commands were configured - add your custom code to make it happen */';
             // @TODO : message after generation that this file needs to be completed
         }
+
         $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => 'on' . $this->formatClassName($eventName, 'event'),
             'parameters' => [

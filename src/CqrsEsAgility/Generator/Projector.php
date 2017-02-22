@@ -8,6 +8,7 @@ use Zend\Code\Generator\DocBlock\Tag;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
+use Interop\Container\ContainerInterface;
 
 class Projector extends AbstractFile
 {
@@ -30,8 +31,8 @@ class Projector extends AbstractFile
             'body' => '/* project to table/etc */',
             'docBlock' => DocBlockGenerator::fromArray(array(
                 'shortDescription' => '',
-                'longDescription'  => null,
-                'tags'             => array(
+                'longDescription' => null,
+                'tags' => array(
                     //new Tag\ReturnTag(array(
                     //    'datatype'  => 'string|null',
                     //)),
@@ -39,6 +40,66 @@ class Projector extends AbstractFile
             )),
             // @TODO message to developer to add their code
         ]));
+        $this->addProjectorToProjectorsFactory($eventName, $projectorName);
     }
 
+
+    private function addProjectorToProjectorsFactory($eventName, $projectorName)
+    {
+        $class = $this->getFile($this->getFqcn($eventName, 'projectors-factory'));
+        $class->addUse($this->getFqcn($projectorName, 'projector'));
+        $class->addUse(ContainerInterface::class);
+
+        if (false == $class->hasMethod('__invoke')) {
+            //TODO add the listener
+            $body = "return [\n";
+            $body .= "];";
+            $class->addMethodFromGenerator(MethodGenerator::fromArray([
+                'name' => '__invoke',
+                'parameters' => [
+                    ParameterGenerator::fromArray([
+                        'name' => 'container',
+                        'type' => ContainerInterface::class,
+                    ]),
+                ],
+                'visibility' => MethodGenerator::FLAG_PUBLIC,
+                'body' => $body,
+                'docBlock' => DocBlockGenerator::fromArray(array(
+                    'shortDescription' => '',
+                    'longDescription'  => null,
+                    'tags'             => array(
+                        //new Tag\ReturnTag(array(
+                        //    'datatype'  => 'string|null',
+                        //)),
+                    ),
+                )),
+            ]));
+        }
+        $this->addProjectorToInvokeBody($class, $projectorName);
+    }
+
+
+    /**
+     * sorry this is hacky
+     * @TODO: find a better way to modify the method body ad-hoc
+     *   return [
+     *      SomeProjector(),
+     *
+     *      //THIS WILL BE ADDED
+     *      YourNewProjector(),
+     *
+     *   ];
+     *
+     */
+    private function addProjectorToInvokeBody(ClassGenerator $projectorsClass, $projectorName)
+    {
+        $method = $projectorsClass->getMethod('__invoke');
+        $bodySplit = explode("\n", $method->getBody());
+        //pop the end off (closes array)
+        $end = array_pop($bodySplit);
+        $bodySplit[] = "    " . "new " . $this->formatClassName($projectorName, 'projector') ."(),";
+        $bodySplit[] = $end;
+        //set to the new body (with the added projector)
+        $method->setBody(implode("\n", $bodySplit));
+    }
 }

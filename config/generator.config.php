@@ -9,6 +9,7 @@
         'listener' => 'Infrastructure\\EventListener',
         'listeners-factory' => 'Factory\\Listener',
         'projector' => 'Infrastructure\\Projector',
+        'projectors-factory' => 'Factory\\Projector',
     ],
     'class-name-append' => [
         'aggregate' => 'Aggregate',
@@ -16,5 +17,6 @@
         'command-handler' => 'Handler',
         'listener' => 'Listener',
         'listeners-factory' => 'ListenersFactory',
+        'projectors-factory' => 'ProjectorsFactory',
     ],
 ];
