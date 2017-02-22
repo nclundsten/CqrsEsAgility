@@ -124,7 +124,6 @@ class Listener extends AbstractFile
      *      ),
      *
      *      //THIS WILL BE ADDED
-     *
      *      YourNewListener(
      *          $container->get(CommandBus::class)
      *      ),
