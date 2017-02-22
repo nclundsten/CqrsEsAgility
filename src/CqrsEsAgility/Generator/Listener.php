@@ -116,7 +116,8 @@ class Listener extends AbstractFile
 
     /**
      * sorry this is hacky
-     * @TODO: find a better way to modify the method body ad-hoc
+     * @TODO: find a better way to modify the method body
+     * @TODO: perhaps extend zend\code\generator\classgenerator
      *   return [
      *      SomeListener(
      *          $container->get(CommandBus::class)
