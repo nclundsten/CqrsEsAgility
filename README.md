@@ -11,7 +11,6 @@ Generate many common files needed by providing a simple config
 
 todo 
 -----
-- generate factories & interfaces where needed
 - tests
 - generate tests for files created
 - plenty more
