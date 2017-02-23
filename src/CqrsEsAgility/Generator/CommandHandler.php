@@ -14,7 +14,16 @@ class CommandHandler extends AbstractFile
     public function addCommandHandler($commandName, $eventName=null)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getFile($this->getFqcn($commandName, 'command-handler'));
+        $class = $this->getClass($this->getFqcn($commandName, 'command-handler'));
         $class->setFinal(true);
+        $this->addCommandHandlerFactory($commandName, $eventName);
+    }
+
+    protected function addCommandHandlerFactory($commandName, $eventName=null)
+    {
+        /* @var ClassGenerator $class */
+        $class = $this->getClass($this->getFqcn($commandName, 'command-handler-factory'));
+        $class->setFinal(true);
+
     }
 }

@@ -15,7 +15,7 @@ class Command extends AbstractFile
     public function addCommand($commandName, $commandProps)
     {
         /* @var ClassGenerator $class */
-        $class = $this->createFile($this->getFqcn($commandName, 'command'));
+        $class = $this->getClass($this->getFqcn($commandName, 'command'));
         $class->addUse(ProophCommand::class);
         $class->setExtendedClass(ProophCommand::class);
         $class->setFinal(true);

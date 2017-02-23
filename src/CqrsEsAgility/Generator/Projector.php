@@ -15,7 +15,7 @@ class Projector extends AbstractFile
     public function addProjector($projectorName, $eventName)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getFile($this->getFqcn($projectorName, 'projector'));
+        $class = $this->getClass($this->getFqcn($projectorName, 'projector'));
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->setFinal(1);
 
@@ -43,10 +43,9 @@ class Projector extends AbstractFile
         $this->addProjectorToProjectorsFactory($eventName, $projectorName);
     }
 
-
     private function addProjectorToProjectorsFactory($eventName, $projectorName)
     {
-        $class = $this->getFile($this->getFqcn($eventName, 'projectors-factory'));
+        $class = $this->getClass($this->getFqcn($eventName, 'projectors-factory'));
         $class->addUse($this->getFqcn($projectorName, 'projector'));
         $class->addUse(ContainerInterface::class);
 
@@ -77,7 +76,6 @@ class Projector extends AbstractFile
         }
         $this->addProjectorToInvokeBody($class, $projectorName);
     }
-
 
     /**
      * sorry this is hacky

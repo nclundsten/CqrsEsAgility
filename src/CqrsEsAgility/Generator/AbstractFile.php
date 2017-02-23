@@ -26,14 +26,14 @@ abstract class AbstractFile
         $this->files = $files;
     }
 
-    protected function getFile($name)
+    protected function getClass($name)
     {
-        return $this->files->getFile($name);
+        return $this->files->getClass($name);
     }
 
-    protected function createFile($name)
+    protected function getInterface($name)
     {
-        return $this->files->createFile($name);
+        return $this->files->getInterface($name);
     }
 
     public function getNamespace($type)

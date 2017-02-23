@@ -20,19 +20,19 @@ abstract class AbstractGenerate
     /* @var Command */
     protected $command;
 
-    /* @var CommandHandler*/
+    /* @var CommandHandler */
     protected $commandHandler;
 
-    /* @var Aggregate*/
+    /* @var Aggregate */
     protected $aggregate;
 
     /* @var Event */
     protected $event;
 
-    /* @var Listener*/
+    /* @var Listener */
     protected $listener;
 
-    /* @var Projector*/
+    /* @var Projector */
     protected $projector;
 
     public function __construct(

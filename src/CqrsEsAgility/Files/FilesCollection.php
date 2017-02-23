@@ -3,35 +3,32 @@
 namespace CqrsEsAgility\Files;
 
 use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\InterfaceGenerator;
 
 class FilesCollection
 {
-    protected $classes = [];
+    protected $files = [];
 
-    public function getFile($name) : ClassGenerator
+    public function getClass($name) : ClassGenerator
     {
-        if (!isset($this->classes[$name])) {
-            $this->createFile($name);
+        if (!isset($this->files[$name])) {
+            $this->files[$name] = new ClassGenerator($name);
         }
 
-        return $this->classes[$name];
+        return $this->files[$name];
     }
 
-    public function createFile($name) : ClassGenerator
+    public function getInterface($name) : InterfaceGenerator
     {
-        if (isset($this->classes[$name])) {
-            throw new \Exception('file already created: ' . $name);
+        if (!isset($this->files[$name])) {
+            $this->files[$name] = new InterfaceGenerator($name);
         }
 
-        $class = new ClassGenerator();
-        $class->setName($name);
-        $this->classes[$name] = $class;
-
-        return $this->classes[$name];
+        return $this->files[$name];
     }
 
     public function getFiles()
     {
-        return $this->classes;
+        return $this->files;
     }
 }

@@ -16,7 +16,7 @@ class Listener extends AbstractFile
     public function addEventListener($eventName, $listenerName, $listenerConfig)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getFile($this->getFqcn($listenerName, 'listener'));
+        $class = $this->getClass($this->getFqcn($listenerName, 'listener'));
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->setFinal(1);
 
@@ -77,7 +77,7 @@ class Listener extends AbstractFile
 
     private function addListenerToListenersFactory($eventName, $listenerName, array $commands)
     {
-        $class = $this->getFile($this->getFqcn($eventName, 'listeners-factory'));
+        $class = $this->getClass($this->getFqcn($eventName, 'listeners-factory'));
         $class->addUse($this->getFqcn($listenerName, 'listener'));
         $class->addUse(ContainerInterface::class);
 
