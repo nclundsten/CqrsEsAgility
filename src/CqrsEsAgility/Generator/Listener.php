@@ -10,13 +10,14 @@ use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Prooph\ServiceBus\CommandBus;
 use Interop\Container\ContainerInterface;
+use CqrsEsAgility\Files\Exception\ClassNotFound;
 
 class Listener extends AbstractFile
 {
     public function addEventListener(string $eventName, string $listenerName, array $listenerConfig)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getClass($this->getFqcn($listenerName, 'listener'));
+        $class = $this->createClass($this->getFqcn($listenerName, 'listener'));
 
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->setFinal(1);
@@ -77,39 +78,43 @@ class Listener extends AbstractFile
 
     private function addListenerToListenersFactory(string $eventName, string $listenerName, array $commands)
     {
-        $class = $this->getClass($this->getFqcn($eventName, 'listeners-factory'));
-        $class->addUse($this->getFqcn($listenerName, 'listener'));
-        $class->addUse(ContainerInterface::class);
+        try {
+            /* @var ClassGenerator $class */
+            $class = $this->getClass($this->getFqcn($eventName, 'listeners-factory'));
+        } catch (ClassNotFound $exception) {
+            /* @var ClassGenerator $class */
+            $class = $this->createClass($this->getFqcn($eventName, 'listeners-factory'));
+            $class->addUse($this->getFqcn($listenerName, 'listener'));
+            $class->addUse(ContainerInterface::class);
+        }
+
+        $body = "return [\n";
+        $body .= "];";
+        $class->addMethodFromGenerator(MethodGenerator::fromArray([
+            'name' => '__invoke',
+            'parameters' => [
+                ParameterGenerator::fromArray([
+                    'name' => 'container',
+                    'type' => ContainerInterface::class,
+                ]),
+            ],
+            'visibility' => MethodGenerator::FLAG_PUBLIC,
+            'body' => $body,
+            'docBlock' => DocBlockGenerator::fromArray(array(
+                'shortDescription' => '',
+                'longDescription'  => null,
+                'tags'             => array(
+                    //new Tag\ReturnTag(array(
+                    //    'datatype'  => 'string|null',
+                    //)),
+                ),
+            )),
+        ]));
 
         if (count($commands)) {
             $class->addUse(CommandBus::class);
         }
 
-        if (false == $class->hasMethod('__invoke')) {
-            //TODO add the listener
-            $body = "return [\n";
-            $body .= "];";
-            $class->addMethodFromGenerator(MethodGenerator::fromArray([
-                'name' => '__invoke',
-                'parameters' => [
-                    ParameterGenerator::fromArray([
-                        'name' => 'container',
-                        'type' => ContainerInterface::class,
-                    ]),
-                ],
-                'visibility' => MethodGenerator::FLAG_PUBLIC,
-                'body' => $body,
-                'docBlock' => DocBlockGenerator::fromArray(array(
-                    'shortDescription' => '',
-                    'longDescription'  => null,
-                    'tags'             => array(
-                        //new Tag\ReturnTag(array(
-                        //    'datatype'  => 'string|null',
-                        //)),
-                    ),
-                )),
-            ]));
-        }
         $this->addListenerToInvokeBody($class, $listenerName, count($commands));
     }
 

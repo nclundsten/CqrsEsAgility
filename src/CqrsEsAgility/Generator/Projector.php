@@ -9,16 +9,21 @@ use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Interop\Container\ContainerInterface;
+use CqrsEsAgility\Files\Exception\ClassNotFound;
 
 class Projector extends AbstractFile
 {
     public function addProjector(string $projectorName, string $eventName)
     {
-        /* @var ClassGenerator $class */
-        $class = $this->getClass($this->getFqcn($projectorName, 'projector'));
-
-        $class->addUse($this->getFqcn($eventName, 'event'));
-        $class->setFinal(1);
+        try {
+            /* @var ClassGenerator $class */
+            $class = $this->getClass($this->getFqcn($projectorName, 'projector'));
+        } catch (ClassNotFound $exception) {
+            /* @var ClassGenerator $class */
+            $class = $this->createClass($this->getFqcn($projectorName, 'projector'));
+            $class->addUse($this->getFqcn($eventName, 'event'));
+            $class->setFinal(1);
+        }
 
         $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => 'on' . $this->formatClassName($eventName, 'event'),
@@ -41,13 +46,19 @@ class Projector extends AbstractFile
             )),
             // @TODO message to developer to add their code
         ]));
+
         $this->addProjectorToProjectorsFactory($eventName, $projectorName);
     }
 
     private function addProjectorToProjectorsFactory(string $eventName, string $projectorName)
     {
-        /* @var ClassGenerator $class */
-        $class = $this->getClass($this->getFqcn($eventName, 'projectors-factory'));
+        try {
+            /* @var ClassGenerator $class */
+            $class = $this->getClass($this->getFqcn($eventName, 'projectors-factory'));
+        } catch (ClassNotFound $exception) {
+            /* @var ClassGenerator $class */
+            $class = $this->createClass($this->getFqcn($eventName, 'projectors-factory'));
+        }
 
         $class->addUse($this->getFqcn($projectorName, 'projector'));
         $class->addUse(ContainerInterface::class);

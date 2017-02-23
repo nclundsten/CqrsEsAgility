@@ -17,6 +17,16 @@ class Generate extends AbstractGenerate
         }
 
         if (
+            isset($config['aggregates'])
+            && is_array($config['aggregates'])
+            && count($config['aggregates'])
+        ) {
+            foreach ($config['aggregates'] as $aggregateName => $aggregateConfig) {
+                $this->addAggregate($aggregateName, $aggregateConfig);
+            }
+        }
+
+        if (
             isset($config['commands'])
             && is_array($config['commands'])
             && count($config['commands'])
@@ -26,15 +36,6 @@ class Generate extends AbstractGenerate
             }
         }
 
-        if (
-            isset($config['aggregates'])
-            && is_array($config['aggregates'])
-            && count($config['aggregates'])
-        ) {
-            foreach ($config['aggregates'] as $aggregateName => $aggregateConfig) {
-                $this->addAggregate($aggregateName, $aggregateConfig);
-            }
-        }
 
         parent::generate();
     }
@@ -46,7 +47,7 @@ class Generate extends AbstractGenerate
 
     protected function addAggregate(string $aggregateName, array $aggregateConfig)
     {
-        //TODO
+        $this->aggregate->addAggregate($aggregateName, $aggregateConfig);
     }
 
     protected function addCommand(string $commandName, array $commandConfig)

@@ -15,7 +15,7 @@ class Event extends AbstractFile
     public function addEvent(string $eventName, array $eventProps)
     {
         /* @var ClassGenerator $class */
-        $class = $this->getClass($this->getFqcn($eventName, 'event'));
+        $class = $this->createClass($this->getFqcn($eventName, 'event'));
         $class->addUse(ProophEvent::class);
         $class->setExtendedClass(ProophEvent::class);
         $class->setFinal(true);

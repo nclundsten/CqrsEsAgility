@@ -28,9 +28,19 @@ abstract class AbstractFile
         $this->files = $files;
     }
 
+    protected function createClass($name) : ClassGenerator
+    {
+        return $this->files->createClass($name);
+    }
+
     protected function getClass($name) : ClassGenerator
     {
         return $this->files->getClass($name);
+    }
+
+    protected function createInterface($name) : InterfaceGenerator
+    {
+        return $this->files->createInterface($name);
     }
 
     protected function getInterface($name) : InterfaceGenerator
