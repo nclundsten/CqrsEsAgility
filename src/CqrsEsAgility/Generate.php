@@ -27,12 +27,12 @@ class Generate extends AbstractGenerate
     {
         $this->command->addCommand($commandName, $commandConfig['commandProps']);
 
-        //a command may not require an aggregate, or event
+        //a command *MAY* have an associated aggregate (*SHOULD* ?? optional for now)
         if (isset($commandConfig['aggregateName'])) {
             $this->aggregate->addAggregateCommand($commandConfig['aggregateName'], $commandName, $commandConfig['commandProps']);
         }
 
-        //a command *MAY* result in an event
+        //a command *MAY* have an associated event
         if (
             isset($commandConfig['event'])
             && is_array($commandConfig['event'])

@@ -2,6 +2,7 @@
 
 return [
     'HockeyTracker' => [
+        // @TODO generate actions
         'actions' => [
             'AddPlayer',
             'AddTeam',
@@ -14,6 +15,14 @@ return [
             'RemovePlayerFromTeam',
             'RescheduleGame',
             'CancelScheduledGame',
+        ],
+        // @TODO generate aggregates separately from commands
+        'aggregates' => [
+            'Player' => [ /*things specific to a player*/ ],
+            'Team' => [ /*things specific to a team*/ ],
+            'TeamPlayer' => [ /*things specific to a player on a team*/ ],
+            'ScheduledGame' => [ /*things specific to a scheduled game between teams*/ ],
+            'Game' => [ /*things specific to a game played between teams*/ ],
         ],
         'commands' => [
             'CreatePlayer' => [
