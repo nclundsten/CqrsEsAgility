@@ -2,21 +2,19 @@
 
 return [
     'HockeyTracker' => [
-        // @TODO generate actions
         'actions' => [
-            'AddPlayer',
-            'AddTeam',
-            'AddPlayerToTeam',
-            'ScheduleGame',
-            'StartGame',
-            'AddPointsForTeamInGame',
-            'EndGame',
+            'AddPlayer' => [],
+            'AddTeam' => [],
+            'AddPlayerToTeam' => [],
+            'ScheduleGame' => [],
+            'StartGame' => [],
+            'AddPointsForTeamInGame' => [],
+            'EndGame' => [],
 
-            'RemovePlayerFromTeam',
-            'RescheduleGame',
-            'CancelScheduledGame',
+            'RemovePlayerFromTeam' => [],
+            'RescheduleGame' => [],
+            'CancelScheduledGame' => [],
         ],
-        // @TODO generate aggregates separately from commands
         'aggregates' => [
             'Player' => [ /*things specific to a player*/ ],
             'Team' => [ /*things specific to a team*/ ],

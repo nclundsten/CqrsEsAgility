@@ -6,21 +6,47 @@ class Generate extends AbstractGenerate
 {
     public function __invoke(array $config)
     {
-        //TODO actions
-
         if (
-            !isset($config['commands'])
-            || !is_array($config['commands'])
-            || !count($config['commands'])
+            isset($config['actions'])
+            && is_array($config['actions'])
+            && count($config['actions'])
         ) {
-            throw new \Exception('no commands to generate');
+            foreach ($config['actions'] as $actionName => $actionConfig) {
+                $this->addAction($actionName, $actionConfig);
+            }
         }
 
-        foreach ($config['commands'] as $commandName => $commandConfig) {
-            $this->addCommand($commandName, $commandConfig);
+        if (
+            isset($config['commands'])
+            && is_array($config['commands'])
+            && count($config['commands'])
+        ) {
+            foreach ($config['commands'] as $commandName => $commandConfig) {
+                $this->addCommand($commandName, $commandConfig);
+            }
+        }
+
+        if (
+            isset($config['aggregates'])
+            && is_array($config['aggregates'])
+            && count($config['aggregates'])
+        ) {
+            foreach ($config['aggregates'] as $aggregateName => $aggregateConfig) {
+                $this->addAggregate($aggregateName, $aggregateConfig);
+            }
         }
 
         parent::generate();
+    }
+
+    protected function addAction(string $actionName, array $actionConfig)
+    {
+        //TODO
+    }
+
+    protected function addAggregate(string $aggregateName, array $aggregateConfig)
+    {
+        //TODO
     }
 
     protected function addCommand(string $commandName, array $commandConfig)
