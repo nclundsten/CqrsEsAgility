@@ -8,12 +8,16 @@ class Generate extends AbstractGenerate
     {
         //TODO actions
 
-        if (isset($config['commands']) && count($config['commands'])) {
-            foreach ($config['commands'] as $commandName => $commandConfig) {
-                $this->addCommand($commandName, $commandConfig);
-            }
-        } else {
-            throw new \Exception('no files to generate');
+        if (
+            !isset($config['commands'])
+            || !is_array($config['commands'])
+            || !count($config['commands'])
+        ) {
+            throw new \Exception('no commands to generate');
+        }
+
+        foreach ($config['commands'] as $commandName => $commandConfig) {
+            $this->addCommand($commandName, $commandConfig);
         }
 
         parent::generate();
@@ -22,11 +26,17 @@ class Generate extends AbstractGenerate
     protected function addCommand(string $commandName, array $commandConfig)
     {
         $this->command->addCommand($commandName, $commandConfig['commandProps']);
+
+        //a command may not require an aggregate, or event
         if (isset($commandConfig['aggregateName'])) {
             $this->aggregate->addAggregateCommand($commandConfig['aggregateName'], $commandName, $commandConfig['commandProps']);
         }
 
-        if (isset($commandConfig['event']) && is_array($commandConfig['event'])) {
+        //a command *MAY* result in an event
+        if (
+            isset($commandConfig['event'])
+            && is_array($commandConfig['event'])
+        ) {
             $eventName = $commandConfig['event']['eventName'];
             $this->addEvent($eventName, $commandConfig['aggregateName'], $commandConfig['event']);
             $this->commandHandler->addCommandHandler($commandName, $eventName);
@@ -40,12 +50,23 @@ class Generate extends AbstractGenerate
         $this->event->addEvent($eventName, $eventConfig['eventProps']);
         $this->aggregate->addAggregateEvent($aggregateName, $eventName);
 
-        if (isset($eventConfig['listeners']) && count($eventConfig['listeners'])) {
+        //an event *MAY* have listeners
+        if (
+            isset($eventConfig['listeners'])
+            && is_array($eventConfig['listeners'])
+            && count($eventConfig['listeners'])
+        ) {
             foreach ($eventConfig['listeners'] as $listenerName => $listenerConfig) {
                 $this->addEventListener($eventName, $listenerName, $listenerConfig);
             }
         }
-        if (isset($eventConfig['projectors']) && count($eventConfig['projectors'])) {
+
+        //an event *MAY* have projectors
+        if (
+            isset($eventConfig['projectors'])
+            && is_array($eventConfig['projectors'])
+            && count($eventConfig['projectors'])
+        ) {
             foreach ($eventConfig['projectors'] as $projectorName) {
                 $this->addEventProjector($projectorName, $eventName);
             }
@@ -56,7 +77,12 @@ class Generate extends AbstractGenerate
     {
         $this->listener->addEventListener($eventName, $listenerName, $listenerConfig);
 
-        if (isset($listenerConfig['commands']) && count($listenerConfig['commands'])) {
+        //a listener *MAY* use the command bus to dispatch commands
+        if (
+            isset($listenerConfig['commands'])
+            && is_array($listenerConfig['commands'])
+            && count($listenerConfig['commands'])
+        ) {
             foreach ($listenerConfig['commands'] as $commandName => $commandConfig) {
                 $this->addCommand($commandName, $commandConfig);
             }
