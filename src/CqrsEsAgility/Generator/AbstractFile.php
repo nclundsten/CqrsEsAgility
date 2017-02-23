@@ -3,6 +3,8 @@
 namespace CqrsEsAgility\Generator;
 
 use CqrsEsAgility\Files\FilesCollection;
+use Zend\Code\Generator\ClassGenerator;
+use Zend\Code\Generator\InterfaceGenerator;
 
 abstract class AbstractFile
 {
@@ -18,7 +20,7 @@ abstract class AbstractFile
     /* @var array */
     protected $classNameAppend = [ /* set during construct */];
 
-    public function __construct(array $config, $namespace, FilesCollection $files)
+    public function __construct(array $config, string $namespace, FilesCollection $files)
     {
         $this->namespaces = $config['namespaces'];
         $this->classNameAppend = $config['class-name-append'];
@@ -26,28 +28,28 @@ abstract class AbstractFile
         $this->files = $files;
     }
 
-    protected function getClass($name)
+    protected function getClass($name) : ClassGenerator
     {
         return $this->files->getClass($name);
     }
 
-    protected function getInterface($name)
+    protected function getInterface($name) : InterfaceGenerator
     {
         return $this->files->getInterface($name);
     }
 
-    public function getNamespace($type)
+    public function getNamespace($type) : string
     {
         return $this->baseNamespace . '\\' . $this->namespaces[$type];
     }
 
-    public function getFqcn($name, $type)
+    public function getFqcn($name, $type) : string
     {
         return $this->getNamespace($type)
             . '\\' . $this->formatClassName($name, $type);
     }
 
-    public function formatClassName($name, $type)
+    public function formatClassName($name, $type) : string
     {
         if (isset($this->classNameAppend[$type])) {
             $name .= $this->classNameAppend[$type];

@@ -2,7 +2,6 @@
 
 namespace CqrsEsAgility;
 
-
 class Generate extends AbstractGenerate
 {
     public function __invoke(array $config)
@@ -20,7 +19,7 @@ class Generate extends AbstractGenerate
         parent::generate();
     }
 
-    protected function addCommand($commandName, array $commandConfig)
+    protected function addCommand(string $commandName, array $commandConfig)
     {
         $this->command->addCommand($commandName, $commandConfig['commandProps']);
         if (isset($commandConfig['aggregateName'])) {
@@ -36,7 +35,7 @@ class Generate extends AbstractGenerate
         }
     }
 
-    protected function addEvent($eventName, $aggregateName, array $eventConfig)
+    protected function addEvent(string $eventName, string $aggregateName, array $eventConfig)
     {
         $this->event->addEvent($eventName, $eventConfig['eventProps']);
         $this->aggregate->addAggregateEvent($aggregateName, $eventName);
@@ -53,7 +52,7 @@ class Generate extends AbstractGenerate
         }
     }
 
-    protected function addEventListener($eventName, $listenerName, $listenerConfig)
+    protected function addEventListener(string $eventName, string $listenerName, $listenerConfig)
     {
         $this->listener->addEventListener($eventName, $listenerName, $listenerConfig);
 
@@ -64,7 +63,7 @@ class Generate extends AbstractGenerate
         }
     }
 
-    protected function addEventProjector($projectorName, $eventName)
+    protected function addEventProjector(string $projectorName, string $eventName)
     {
         $this->projector->addProjector($projectorName, $eventName);
     }

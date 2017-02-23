@@ -13,13 +13,13 @@ use Interop\Container\ContainerInterface;
 
 class Listener extends AbstractFile
 {
-    public function addEventListener($eventName, $listenerName, $listenerConfig)
+    public function addEventListener(string $eventName, string $listenerName, array $listenerConfig)
     {
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($listenerName, 'listener'));
+
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->setFinal(1);
-
 
         if (isset($listenerConfig['commands'])) {
             $class->addPropertyFromGenerator(PropertyGenerator::fromArray([
@@ -75,7 +75,7 @@ class Listener extends AbstractFile
         $this->addListenerToListenersFactory($eventName, $listenerName, $listenerConfig['commands']);
     }
 
-    private function addListenerToListenersFactory($eventName, $listenerName, array $commands)
+    private function addListenerToListenersFactory(string $eventName, string $listenerName, array $commands)
     {
         $class = $this->getClass($this->getFqcn($eventName, 'listeners-factory'));
         $class->addUse($this->getFqcn($listenerName, 'listener'));
@@ -131,7 +131,7 @@ class Listener extends AbstractFile
      *   ];
      *
      */
-    private function addListenerToInvokeBody(ClassGenerator $listenersClass, $listenerName, $commandBus = false)
+    private function addListenerToInvokeBody(ClassGenerator $listenersClass, string $listenerName, bool $commandBus = false)
     {
         $method = $listenersClass->getMethod('__invoke');
         $bodySplit = explode("\n", $method->getBody());

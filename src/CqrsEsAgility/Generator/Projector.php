@@ -12,10 +12,11 @@ use Interop\Container\ContainerInterface;
 
 class Projector extends AbstractFile
 {
-    public function addProjector($projectorName, $eventName)
+    public function addProjector(string $projectorName, string $eventName)
     {
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($projectorName, 'projector'));
+
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->setFinal(1);
 
@@ -43,9 +44,11 @@ class Projector extends AbstractFile
         $this->addProjectorToProjectorsFactory($eventName, $projectorName);
     }
 
-    private function addProjectorToProjectorsFactory($eventName, $projectorName)
+    private function addProjectorToProjectorsFactory(string $eventName, string $projectorName)
     {
+        /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($eventName, 'projectors-factory'));
+
         $class->addUse($this->getFqcn($projectorName, 'projector'));
         $class->addUse(ContainerInterface::class);
 
@@ -90,7 +93,7 @@ class Projector extends AbstractFile
      *   ];
      *
      */
-    private function addProjectorToInvokeBody(ClassGenerator $projectorsClass, $projectorName)
+    private function addProjectorToInvokeBody(ClassGenerator $projectorsClass, string $projectorName)
     {
         $method = $projectorsClass->getMethod('__invoke');
         $bodySplit = explode("\n", $method->getBody());

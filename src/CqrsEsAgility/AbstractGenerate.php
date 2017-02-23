@@ -36,7 +36,7 @@ abstract class AbstractGenerate
     protected $projector;
 
     public function __construct(
-        $files,
+        FilesCollection $files,
         Command $command,
         CommandHandler $commandHandler,
         Aggregate $aggregate,

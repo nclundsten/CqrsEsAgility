@@ -12,10 +12,11 @@ use Prooph\Common\Messaging\Command as ProophCommand;
 
 class Command extends AbstractFile
 {
-    public function addCommand($commandName, $commandProps)
+    public function addCommand(string $commandName, array $commandProps)
     {
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($commandName, 'command'));
+
         $class->addUse(ProophCommand::class);
         $class->setExtendedClass(ProophCommand::class);
         $class->setFinal(true);

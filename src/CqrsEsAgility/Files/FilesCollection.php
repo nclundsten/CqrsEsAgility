@@ -7,9 +7,10 @@ use Zend\Code\Generator\InterfaceGenerator;
 
 class FilesCollection
 {
+    /* @var array */
     protected $files = [];
 
-    public function getClass($name) : ClassGenerator
+    public function getClass(string $name) : ClassGenerator
     {
         if (!isset($this->files[$name])) {
             $this->files[$name] = new ClassGenerator($name);
@@ -18,7 +19,7 @@ class FilesCollection
         return $this->files[$name];
     }
 
-    public function getInterface($name) : InterfaceGenerator
+    public function getInterface(string $name) : InterfaceGenerator
     {
         if (!isset($this->files[$name])) {
             $this->files[$name] = new InterfaceGenerator($name);
@@ -27,7 +28,7 @@ class FilesCollection
         return $this->files[$name];
     }
 
-    public function getFiles()
+    public function getFiles() : array
     {
         return $this->files;
     }

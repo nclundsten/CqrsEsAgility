@@ -11,19 +11,20 @@ use Zend\Code\Generator\ParameterGenerator;
 
 class CommandHandler extends AbstractFile
 {
-    public function addCommandHandler($commandName, $eventName=null)
+    public function addCommandHandler(string $commandName, $eventName=null)
     {
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($commandName, 'command-handler'));
+
         $class->setFinal(true);
         $this->addCommandHandlerFactory($commandName, $eventName);
     }
 
-    protected function addCommandHandlerFactory($commandName, $eventName=null)
+    protected function addCommandHandlerFactory(string $commandName, $eventName=null)
     {
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($commandName, 'command-handler-factory'));
-        $class->setFinal(true);
 
+        $class->setFinal(true);
     }
 }

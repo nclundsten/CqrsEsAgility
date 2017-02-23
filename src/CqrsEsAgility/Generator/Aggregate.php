@@ -14,7 +14,7 @@ use Prooph\EventStore\Aggregate\AggregateRepository;
 
 class Aggregate extends AbstractFile
 {
-    public function addAggregateCommand($aggregateName, $commandName, $commandProps)
+    public function addAggregateCommand(string $aggregateName, string $commandName, array $commandProps)
     {
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($aggregateName, 'aggregate'));
@@ -30,9 +30,11 @@ class Aggregate extends AbstractFile
         $this->addRepository($aggregateName);
     }
 
-    public function addAggregateEvent($aggregateName, $eventName)
+    public function addAggregateEvent(string $aggregateName, string $eventName)
     {
+        /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($aggregateName, 'aggregate'));
+
         $class->addUse($this->getFqcn($eventName, 'event'));
         $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => 'on' . $eventName,
@@ -45,10 +47,11 @@ class Aggregate extends AbstractFile
         ]));
     }
 
-    public function addRepository($aggregateName)
+    public function addRepository(string $aggregateName)
     {
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($aggregateName, 'repository'));
+
         $class->addUse(AggregateRepository::class);
         $class->addUse($this->getFqcn($aggregateName, 'aggregate'));
 
@@ -113,10 +116,11 @@ class Aggregate extends AbstractFile
         $this->addRepositoryFactory($aggregateName);
     }
 
-    protected function addRepositoryInterface($aggregateName)
+    protected function addRepositoryInterface(string $aggregateName)
     {
         /* @var InterfaceGenerator $interface */
         $interface = $this->getInterface($this->getFqcn($aggregateName, 'repository-interface'));
+
         if (false == $interface->hasMethod('add')) {
             $interface->addMethodFromGenerator(MethodGenerator::fromArray([
                 'name' => 'add',
@@ -141,12 +145,12 @@ class Aggregate extends AbstractFile
         }
     }
 
-    protected function addRepositoryFactory($aggregateName)
+    protected function addRepositoryFactory(string $aggregateName)
     {
         $class = $this->getClass($this->getFqcn($aggregateName, 'repository-factory'));
     }
 
-    protected function addAggregateNotFoundException($aggregateName)
+    protected function addAggregateNotFoundException(string $aggregateName)
     {
         //TODO
     }
