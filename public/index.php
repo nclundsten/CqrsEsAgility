@@ -17,20 +17,20 @@ if (file_exists('vendor/autoload.php')) {
     throw new RuntimeException('Unable to autoload');
 }
 
-$config = require 'config/sample.hockey.config.php';
+$namespaces = require 'config/sample.hockey.config.php';
 $generatorsConfig = require 'config/generator.config.php';
 
-foreach ($config as $namespace => $structure) {
+foreach ($namespaces as $namespaceName => $namespaceConfig) {
 
     $fileCollection = new CqrsEsAgility\Files\FilesCollection();
     $generate = new CqrsEsAgility\Generate(
         $fileCollection,
-        new CqrsEsAgility\Generator\Command($generatorsConfig, $namespace, $fileCollection),
-        new CqrsEsAgility\Generator\CommandHandler($generatorsConfig, $namespace, $fileCollection),
-        new CqrsEsAgility\Generator\Aggregate($generatorsConfig, $namespace, $fileCollection),
-        new CqrsEsAgility\Generator\Event($generatorsConfig, $namespace, $fileCollection),
-        new CqrsEsAgility\Generator\Listener($generatorsConfig, $namespace, $fileCollection),
-        new CqrsEsAgility\Generator\Projector($generatorsConfig, $namespace, $fileCollection)
+        new CqrsEsAgility\Generator\Command($generatorsConfig, $namespaceName, $fileCollection),
+        new CqrsEsAgility\Generator\CommandHandler($generatorsConfig, $namespaceName, $fileCollection),
+        new CqrsEsAgility\Generator\Aggregate($generatorsConfig, $namespaceName, $fileCollection),
+        new CqrsEsAgility\Generator\Event($generatorsConfig, $namespaceName, $fileCollection),
+        new CqrsEsAgility\Generator\Listener($generatorsConfig, $namespaceName, $fileCollection),
+        new CqrsEsAgility\Generator\Projector($generatorsConfig, $namespaceName, $fileCollection)
     );
-    $generate($structure);
+    $generate($namespaceConfig);
 }
