@@ -64,7 +64,6 @@ class Projector extends AbstractFile
         $class->addUse(ContainerInterface::class);
 
         if (false == $class->hasMethod('__invoke')) {
-            //TODO add the listener
             $body = "return [\n";
             $body .= "];";
             $class->addMethodFromGenerator(MethodGenerator::fromArray([

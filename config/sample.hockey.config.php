@@ -98,7 +98,7 @@ return [
             ],
             'EndGame' => [
                 'aggregateName' => 'Game',
-                'commandProps' => ['gameId'],
+                'commandProps' => [],
                 'event' => [
                     'eventName' => 'GameWasEnded',
                     'eventProps' => ['gameId', 'dateTime'],

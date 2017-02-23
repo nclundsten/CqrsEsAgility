@@ -54,9 +54,13 @@ class Generate extends AbstractGenerate
     {
         $this->command->addCommand($commandName, $commandConfig['commandProps']);
 
+        $aggregateName = isset($commandConfig['aggregateName'])
+            ? $commandConfig['aggregateName']
+            : null;
+
         //a command *MAY* have an associated aggregate (*SHOULD* ?? optional for now)
-        if (isset($commandConfig['aggregateName'])) {
-            $this->aggregate->addAggregateCommand($commandConfig['aggregateName'], $commandName, $commandConfig['commandProps']);
+        if ($aggregateName) {
+            $this->aggregate->addAggregateCommand($aggregateName, $commandName, $commandConfig['commandProps']);
         }
 
         //a command *MAY* have an associated event
@@ -65,10 +69,19 @@ class Generate extends AbstractGenerate
             && is_array($commandConfig['event'])
         ) {
             $eventName = $commandConfig['event']['eventName'];
-            $this->addEvent($eventName, $commandConfig['aggregateName'], $commandConfig['event']);
-            $this->commandHandler->addCommandHandler($commandName, $eventName);
+            $this->addEvent($eventName, $aggregateName, $commandConfig['event']);
+            $this->commandHandler->addCommandHandler(
+                $commandName,
+                $commandConfig['commandProps'],
+                $aggregateName,
+                $eventName
+            );
         } else {
-            $this->commandHandler->addCommandHandler($commandName);
+            $this->commandHandler->addCommandHandler(
+                $commandName,
+                $commandConfig['commandProps'],
+                $aggregateName
+            );
         }
     }
 
