@@ -155,7 +155,7 @@ return [
                 'commandProps' => ['scheduledGameId', 'reason'],
                 'event' => [
                     'eventName' => 'GameWasCancelled',
-                    'eventProps' => ['ScheduledGameId', 'reason'],
+                    'eventProps' => ['scheduledGameId', 'reason'],
                     'projectors' => [
                         'GameSchedule',
                     ],

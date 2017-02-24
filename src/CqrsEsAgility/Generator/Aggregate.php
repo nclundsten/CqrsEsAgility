@@ -95,7 +95,7 @@ class Aggregate extends AbstractFile
         $body .= '$aggregateRoot = $this->aggregateRepository->getAggregateRoot($' . lcfirst($aggregateName) . 'Id)' . "\n";
         $body .= "\n";
         $body .= 'if (!$aggregateRoot instanceof ' . $this->getFqcn($aggregateName, 'aggregate') . ') {' . "\n";
-        $body .= '    ' . '/*exception*/' . "\n";
+        $body .= '    ' . '/*TODO aggregate not found exception*/' . "\n";
         $body .= '}' . "\n";
         $body .= "\n";
         $body .= 'return $aggregateRoot;' . "\n";
