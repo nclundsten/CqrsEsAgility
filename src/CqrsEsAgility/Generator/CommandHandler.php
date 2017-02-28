@@ -123,6 +123,5 @@ class CommandHandler extends AbstractFile
             )),
             'returnType' => $this->getFqcn($commandName, 'command-handler'),
         ]));
-
     }
 }

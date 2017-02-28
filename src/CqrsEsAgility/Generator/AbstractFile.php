@@ -28,38 +28,38 @@ abstract class AbstractFile
         $this->files = $files;
     }
 
-    protected function createClass($name) : ClassGenerator
+    protected function createClass(string $name) : ClassGenerator
     {
         return $this->files->createClass($name);
     }
 
-    protected function getClass($name) : ClassGenerator
+    protected function getClass(string $name) : ClassGenerator
     {
         return $this->files->getClass($name);
     }
 
-    protected function createInterface($name) : InterfaceGenerator
+    protected function createInterface(string $name) : InterfaceGenerator
     {
         return $this->files->createInterface($name);
     }
 
-    protected function getInterface($name) : InterfaceGenerator
+    protected function getInterface(string $name) : InterfaceGenerator
     {
         return $this->files->getInterface($name);
     }
 
-    public function getNamespace($type) : string
+    public function getNamespace(string $type) : string
     {
         return $this->baseNamespace . '\\' . $this->namespaces[$type];
     }
 
-    public function getFqcn($name, $type) : string
+    public function getFqcn(string $name, string $type) : string
     {
         return $this->getNamespace($type)
             . '\\' . $this->formatClassName($name, $type);
     }
 
-    public function formatClassName($name, $type) : string
+    public function formatClassName(string $name, string $type) : string
     {
         if (isset($this->classNameAppend[$type])) {
             $name .= $this->classNameAppend[$type];
