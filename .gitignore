@@ -1,3 +1,5 @@
 vendor
 .idea
 generated/
+tags
+.tagsdate
