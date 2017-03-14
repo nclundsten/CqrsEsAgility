@@ -9,20 +9,22 @@ use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Interop\Container\ContainerInterface;
+use CqrsEsAgility\Config\CommandConfig;
 
-class CommandHandler extends AbstractFile
+class CommandHandler extends GeneratorAbstract
 {
-    public function addCommandHandler(
-        string $commandName,
-        array $commandProps,
-        string $aggregateName = null,
-        string $eventName = null
-    ) {
+    public function addCommandHandler(CommandConfig $commandConfig)
+    {
+        $commandName = $commandConfig['commandName'];
+        $aggregateName = $commandConfig['aggregateName'];
+        $commandProps = $commandConfig['commandProps'];
+
         /* @var ClassGenerator $class */
         $class = $this->createClass($this->getFqcn($commandName, 'command-handler'));
 
         $class->setFinal(true);
 
+        //construct
         if ($aggregateName) {
             $class->addUse($this->getFqcn($aggregateName, 'repository'));
             $repoName = lcfirst($this->formatClassName($aggregateName, 'repository'));
@@ -47,11 +49,13 @@ class CommandHandler extends AbstractFile
             ]));
         }
 
+        //invoke
         if ($aggregateName) {
-            $aggregate = lcfirst($aggregateName);
-            $body = "\$$aggregate = \$this->repository->get(\$command->$aggregate" . "Id());\n";
+            $lcAggregateName = lcfirst($aggregateName);
+            $lcCommandName = lcfirst($commandName);
+            $body = "\$$lcAggregateName = \$this->repository->get(\$command->$lcAggregateName" . "Id());\n";
             if (count($commandProps)) {
-                $body .= "\$$aggregate->" . lcfirst($commandName) ."(\n";
+                $body .= "\$$lcAggregateName->$commandName(\n";
                 $params = [];
                 foreach ($commandProps as $propName) {
                     $params[] = '    ' . '$command->' . $propName . "()";
@@ -59,13 +63,12 @@ class CommandHandler extends AbstractFile
                 $body .= implode(",\n", $params) . "\n";
                 $body .= ");\n";
             } else {
-                $body .= "\$$aggregate->" . lcfirst($commandName) ."();\n";
+                $body .= "\$$lcAggregateName->$commandName();\n";
             }
-            $body .= "\$this->repository->add(\$$aggregate);\n";
+            $body .= "\$this->repository->add(\$$lcAggregateName);\n";
         } else {
             $body = "/* an aggregate was not configured - add your custom handling logic*/";
         }
-
         $class->addUse($this->getFqcn($commandName, 'command'));
         $class->addMethodFromGenerator(MethodGenerator::fromArray([
             'name' => '__invoke',
@@ -78,21 +81,20 @@ class CommandHandler extends AbstractFile
             'body' => $body,
         ]));
 
-        $this->addCommandHandlerFactory($commandName, $aggregateName, $eventName);
+        $this->addCommandHandlerFactory($commandName, $aggregateName);
     }
 
-    protected function addCommandHandlerFactory(
-        string $commandName,
-        string $aggregateName = null,
-        string $eventName = null
-    ) {
+    protected function addCommandHandlerFactory(string $commandName, string $aggregateName = null)
+    {
         /* @var ClassGenerator $class */
         $class = $this->createClass($this->getFqcn($commandName, 'command-handler-factory'));
 
         $class->setFinal(true);
         $class->addUse(ContainerInterface::class);
         $class->addUse($this->getFqcn($commandName, 'command'));
-        $class->addUse($this->getFqcn($aggregateName, 'repository-interface'));
+        if ($aggregateName) {
+            $class->addUse($this->getFqcn($aggregateName, 'repository-interface'));
+        }
 
         $body = "return new " . $this->formatClassName($commandName, 'command-handler') . "(\n";
         if ($aggregateName) {

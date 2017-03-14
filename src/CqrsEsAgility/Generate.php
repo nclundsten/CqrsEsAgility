@@ -2,130 +2,98 @@
 
 namespace CqrsEsAgility;
 
+use CqrsEsAgility\Config\CommandConfig;
+use CqrsEsAgility\Config\AggregateConfig;
+use CqrsEsAgility\Config\EventConfig;
+use CqrsEsAgility\Config\NamespacesConfig;
+use CqrsEsAgility\Config\NamespaceConfig;
+use CqrsEsAgility\Config\ActionConfig;
+use CqrsEsAgility\Config\ListenerConfig;
+
 class Generate extends AbstractGenerate
 {
-    public function __invoke(array $config)
+    public function generateNamespaces(NamespacesConfig $namespaces)
     {
-        if (
-            isset($config['actions'])
-            && is_array($config['actions'])
-            && count($config['actions'])
-        ) {
-            foreach ($config['actions'] as $actionName => $actionConfig) {
-                $this->addAction($actionName, $actionConfig);
-            }
+        foreach ($namespaces as $namespace) {
+            $this->generateNamespace($namespace);
         }
-
-        if (
-            isset($config['aggregates'])
-            && is_array($config['aggregates'])
-            && count($config['aggregates'])
-        ) {
-            foreach ($config['aggregates'] as $aggregateName => $aggregateConfig) {
-                $this->addAggregate($aggregateName, $aggregateConfig);
-            }
-        }
-
-        if (
-            isset($config['commands'])
-            && is_array($config['commands'])
-            && count($config['commands'])
-        ) {
-            foreach ($config['commands'] as $commandName => $commandConfig) {
-                $this->addCommand($commandName, $commandConfig);
-            }
-        }
-
-
-        parent::generate();
     }
 
-    protected function addAction(string $actionName, array $actionConfig)
+    protected function generateNamespace(NamespaceConfig $config)
     {
-        //TODO
-    }
+        $this->setNamespace($config['namespaceName']);
 
-    protected function addAggregate(string $aggregateName, array $aggregateConfig)
-    {
-        $this->aggregate->addAggregate($aggregateName, $aggregateConfig);
-    }
-
-    protected function addCommand(string $commandName, array $commandConfig)
-    {
-        $this->command->addCommand($commandName, $commandConfig['commandProps']);
-
-        $aggregateName = isset($commandConfig['aggregateName'])
-            ? $commandConfig['aggregateName']
-            : null;
-
-        //a command *MAY* have an associated aggregate (*SHOULD* ?? optional for now)
-        if ($aggregateName) {
-            $this->aggregate->addAggregateCommand($aggregateName, $commandName, $commandConfig['commandProps']);
+        foreach ($config['aggregates'] as $aggregateConfig) {
+            $this->addAggregate($aggregateConfig);
         }
+
+        foreach ($config['commands'] as $commandConfig) {
+            $this->addCommand($commandConfig);
+        }
+
+        foreach ($config['actions'] as $actionConfig) {
+            $this->addAction($actionConfig);
+        }
+
+        $this->generateFiles();
+    }
+
+    protected function addAction(ActionConfig $actionConfig)
+    {
+        $this->action->addAction($actionConfig);
+    }
+
+    protected function addAggregate(AggregateConfig $aggregateConfig)
+    {
+        $this->aggregate->addAggregate($aggregateConfig);
+    }
+
+    protected function addCommand(CommandConfig $commandConfig)
+    {
+        $this->command->addCommand($commandConfig);
+
+        //a command *MAY* have an associated aggregate
+        if ($commandConfig['aggregateName']) {
+            $this->aggregate->addAggregateCommand($commandConfig);
+        }
+
+        $this->commandHandler->addCommandHandler($commandConfig);
 
         //a command *MAY* have an associated event
-        if (
-            isset($commandConfig['event'])
-            && is_array($commandConfig['event'])
-        ) {
-            $eventName = $commandConfig['event']['eventName'];
-            $this->addEvent($eventName, $aggregateName, $commandConfig['event']);
-            $this->commandHandler->addCommandHandler(
-                $commandName,
-                $commandConfig['commandProps'],
-                $aggregateName,
-                $eventName
-            );
-        } else {
-            $this->commandHandler->addCommandHandler(
-                $commandName,
-                $commandConfig['commandProps'],
-                $aggregateName
-            );
+        if ($commandConfig['event']) {
+            $this->addEvent($commandConfig['event']);
         }
     }
 
-    protected function addEvent(string $eventName, string $aggregateName, array $eventConfig)
+    protected function addEvent(EventConfig $eventConfig)
     {
+        $aggregateName = $eventConfig->command['aggregateName'];
+        $eventName = $eventConfig['eventName'];
         $this->event->addEvent($eventName, $eventConfig['eventProps']);
         $this->aggregate->addAggregateEvent($aggregateName, $eventName);
 
         //an event *MAY* have listeners
-        if (
-            isset($eventConfig['listeners'])
-            && is_array($eventConfig['listeners'])
-            && count($eventConfig['listeners'])
-        ) {
-            foreach ($eventConfig['listeners'] as $listenerName => $listenerConfig) {
-                $this->addEventListener($eventName, $listenerName, $listenerConfig);
+        if (count($eventConfig['listeners'])) {
+            foreach ($eventConfig['listeners'] as $listenerConfig) {
+                $this->addEventListener($listenerConfig);
             }
         }
 
         //an event *MAY* have projectors
-        if (
-            isset($eventConfig['projectors'])
-            && is_array($eventConfig['projectors'])
-            && count($eventConfig['projectors'])
-        ) {
+        if (count($eventConfig['projectors'])) {
             foreach ($eventConfig['projectors'] as $projectorName) {
                 $this->addEventProjector($projectorName, $eventName);
             }
         }
     }
 
-    protected function addEventListener(string $eventName, string $listenerName, $listenerConfig)
+    protected function addEventListener(ListenerConfig $listenerConfig)
     {
-        $this->listener->addEventListener($eventName, $listenerName, $listenerConfig);
+        $this->listener->addEventListener($listenerConfig);
 
         //a listener *MAY* use the command bus to dispatch commands
-        if (
-            isset($listenerConfig['commands'])
-            && is_array($listenerConfig['commands'])
-            && count($listenerConfig['commands'])
-        ) {
-            foreach ($listenerConfig['commands'] as $commandName => $commandConfig) {
-                $this->addCommand($commandName, $commandConfig);
-            }
+        foreach ($listenerConfig['commands'] as $commandConfig) {
+            $this->addCommand($commandConfig);
         }
     }
 
@@ -134,4 +102,5 @@ class Generate extends AbstractGenerate
         $this->projector->addProjector($projectorName, $eventName);
     }
 }
+
 

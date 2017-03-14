@@ -11,7 +11,7 @@ use Zend\Code\Generator\ParameterGenerator;
 use Interop\Container\ContainerInterface;
 use CqrsEsAgility\Files\Exception\ClassNotFound;
 
-class Projector extends AbstractFile
+class Projector extends GeneratorAbstract
 {
     public function addProjector(string $projectorName, string $eventName)
     {

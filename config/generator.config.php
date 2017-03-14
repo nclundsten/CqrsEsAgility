@@ -1,5 +1,6 @@
 <?php return [
     'namespaces' => [
+        'action' => 'Action',
         'aggregate' => 'Domain\\Aggregate',
         'aggregate-repo-interface' => 'Domain\\Repository',
         'aggregate-repo' => 'Infrastructure\\Repository',
@@ -17,6 +18,7 @@
     ],
     'class-name-append' => [
         //'aggregate' => 'Aggregate',
+        'action' => 'Action',
         'command-handler' => 'Handler',
         'command-handler-factory' => 'HandlerFactory',
         'listener' => 'Listener',

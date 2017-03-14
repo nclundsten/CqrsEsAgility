@@ -6,7 +6,7 @@ use CqrsEsAgility\Files\FilesCollection;
 use Zend\Code\Generator\ClassGenerator;
 use Zend\Code\Generator\InterfaceGenerator;
 
-abstract class AbstractFile
+abstract class GeneratorAbstract
 {
     /* @var string */
     private $baseNamespace;
@@ -20,11 +20,10 @@ abstract class AbstractFile
     /* @var array */
     protected $classNameAppend = [ /* set during construct */];
 
-    public function __construct(array $config, string $namespace, FilesCollection $files)
+    public function __construct(array $config, FilesCollection $files)
     {
         $this->namespaces = $config['namespaces'];
         $this->classNameAppend = $config['class-name-append'];
-        $this->baseNamespace = $namespace;
         $this->files = $files;
     }
 
@@ -46,6 +45,11 @@ abstract class AbstractFile
     protected function getInterface(string $name) : InterfaceGenerator
     {
         return $this->files->getInterface($name);
+    }
+
+    public function setBaseNamespace(string $namespaceName)
+    {
+        $this->baseNamespace = $namespaceName;
     }
 
     public function getNamespace(string $type) : string

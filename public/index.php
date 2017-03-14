@@ -17,20 +17,8 @@ if (file_exists('vendor/autoload.php')) {
     throw new RuntimeException('Unable to autoload');
 }
 
-$namespaces = require 'config/sample.hockey.config.php';
-$generatorsConfig = require 'config/generator.config.php';
+$gen = CqrsEsAgility\Factory\GenerateFactory::create(require 'config/generator.config.php');
 
-foreach ($namespaces as $namespaceName => $namespaceConfig) {
-
-    $fileCollection = new CqrsEsAgility\Files\FilesCollection();
-    $generate = new CqrsEsAgility\Generate(
-        $fileCollection,
-        new CqrsEsAgility\Generator\Command($generatorsConfig, $namespaceName, $fileCollection),
-        new CqrsEsAgility\Generator\CommandHandler($generatorsConfig, $namespaceName, $fileCollection),
-        new CqrsEsAgility\Generator\Aggregate($generatorsConfig, $namespaceName, $fileCollection),
-        new CqrsEsAgility\Generator\Event($generatorsConfig, $namespaceName, $fileCollection),
-        new CqrsEsAgility\Generator\Listener($generatorsConfig, $namespaceName, $fileCollection),
-        new CqrsEsAgility\Generator\Projector($generatorsConfig, $namespaceName, $fileCollection)
-    );
-    $generate($namespaceConfig);
-}
+$gen->generateNamespaces(
+    new CqrsEsAgility\Config\NamespacesConfig(require 'config/sample.hockey.config.php')
+);

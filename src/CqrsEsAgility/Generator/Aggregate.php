@@ -11,11 +11,15 @@ use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Prooph\EventSourcing\AggregateRoot as ProophAggregate;
 use Prooph\EventStore\Aggregate\AggregateRepository;
+use CqrsEsAgility\Config\CommandConfig;
+use CqrsEsAgility\Config\AggregateConfig;
 
-class Aggregate extends AbstractFile
+class Aggregate extends GeneratorAbstract
 {
-    public function addAggregate(string $aggregateName, array $aggregateConfig)
+    public function addAggregate(AggregateConfig $aggregateConfig)
     {
+        $aggregateName = $aggregateConfig['aggregateName'];
+
         /* @var ClassGenerator $class */
         $class = $this->createClass($this->getFqcn($aggregateName, 'aggregate'));
 
@@ -26,8 +30,12 @@ class Aggregate extends AbstractFile
         $this->addRepository($aggregateName);
     }
 
-    public function addAggregateCommand(string $aggregateName, string $commandName, array $commandProps)
+    public function addAggregateCommand(CommandConfig $commandConfig)
     {
+        $aggregateName = $commandConfig['aggregateName'];
+        $commandName = $commandConfig['commandName'];
+        $commandProps = $commandConfig['commandProps'];
+
         /* @var ClassGenerator $class */
         $class = $this->getClass($this->getFqcn($aggregateName, 'aggregate'));
 

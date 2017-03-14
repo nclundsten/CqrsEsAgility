@@ -9,13 +9,14 @@ use CqrsEsAgility\Generator\Event;
 use CqrsEsAgility\Generator\Listener;
 use CqrsEsAgility\Generator\Projector;
 use CqrsEsAgility\Files\FilesCollection;
+use CqrsEsAgility\Generator\Action;
 
 use Zend\Code\Generator\ClassGenerator;
 
 abstract class AbstractGenerate
 {
     /* @var FilesCollection */
-    protected $files;
+    public $files;
 
     /* @var Command */
     protected $command;
@@ -35,6 +36,9 @@ abstract class AbstractGenerate
     /* @var Projector */
     protected $projector;
 
+    /* @var Action */
+    protected $action;
+
     public function __construct(
         FilesCollection $files,
         Command $command,
@@ -42,7 +46,8 @@ abstract class AbstractGenerate
         Aggregate $aggregate,
         Event $event,
         Listener $listener,
-        Projector $projector
+        Projector $projector,
+        Action $action
     ) {
         $this->files = $files;
         $this->command = $command;
@@ -51,9 +56,21 @@ abstract class AbstractGenerate
         $this->event = $event;
         $this->listener = $listener;
         $this->projector = $projector;
+        $this->action = $action;
     }
 
-    protected function generate()
+    protected function setNamespace(string $namespaceName)
+    {
+        $this->command->setBaseNamespace($namespaceName);
+        $this->commandHandler->setBaseNamespace($namespaceName);
+        $this->aggregate->setBaseNamespace($namespaceName);
+        $this->event->setBaseNamespace($namespaceName);
+        $this->listener->setBaseNamespace($namespaceName);
+        $this->projector->setBaseNamespace($namespaceName);
+        $this->action->setBaseNamespace($namespaceName);
+    }
+
+    protected function generateFiles()
     {
         $files = $this->files->getFiles();
         foreach ($files as $file) {

@@ -10,7 +10,7 @@ use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Prooph\EventSourcing\AggregateChanged as ProophEvent;
 
-class Event extends AbstractFile
+class Event extends GeneratorAbstract
 {
     public function addEvent(string $eventName, array $eventProps)
     {

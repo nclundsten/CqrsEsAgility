@@ -9,11 +9,15 @@ use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Prooph\Common\Messaging\Command as ProophCommand;
+use CqrsEsAgility\Config\CommandConfig;
 
-class Command extends AbstractFile
+class Command extends GeneratorAbstract
 {
-    public function addCommand(string $commandName, array $commandProps)
+    public function addCommand(CommandConfig $config)
     {
+        $commandName = $config['commandName'];
+        $commandProps = $config['commandProps'];
+
         /* @var ClassGenerator $class */
         $class = $this->createClass($this->getFqcn($commandName, 'command'));
 

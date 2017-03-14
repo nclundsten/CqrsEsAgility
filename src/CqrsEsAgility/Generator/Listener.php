@@ -11,11 +11,16 @@ use Zend\Code\Generator\ParameterGenerator;
 use Prooph\ServiceBus\CommandBus;
 use Interop\Container\ContainerInterface;
 use CqrsEsAgility\Files\Exception\ClassNotFound;
+use CqrsEsAgility\Config\ListenerConfig;
+use CqrsEsAgility\Config\CommandsConfig;
 
-class Listener extends AbstractFile
+class Listener extends GeneratorAbstract
 {
-    public function addEventListener(string $eventName, string $listenerName, array $listenerConfig)
+    public function addEventListener(ListenerConfig $listenerConfig)
     {
+        $listenerName = $listenerConfig['listenerName'];
+        $eventName = $listenerConfig->listeners->event['eventName'];
+
         /* @var ClassGenerator $class */
         $class = $this->createClass($this->getFqcn($listenerName, 'listener'));
 
@@ -76,7 +81,7 @@ class Listener extends AbstractFile
         $this->addListenerToListenersFactory($eventName, $listenerName, $listenerConfig['commands']);
     }
 
-    private function addListenerToListenersFactory(string $eventName, string $listenerName, array $commands)
+    private function addListenerToListenersFactory(string $eventName, string $listenerName, CommandsConfig $commands)
     {
         try {
             /* @var ClassGenerator $class */

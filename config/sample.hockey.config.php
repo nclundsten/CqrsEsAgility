@@ -1,29 +1,50 @@
 <?php
 
 return [
-    'HockeyTracker' => [
+    [
+        'namespaceName' => 'HockeyTracker',
         'actions' => [
-            'AddPlayer' => [],
-            'AddTeam' => [],
-            'AddPlayerToTeam' => [],
-            'ScheduleGame' => [],
-            'StartGame' => [],
-            'AddPointsForTeamInGame' => [],
-            'EndGame' => [],
+            [
+                'actionName' => 'AddPlayer',
+                'method' => 'POST',
+                'commandName' => 'AddPlayer',
+            ],
+            //'AddTeam' => [],
+            //'AddPlayerToTeam' => [],
+            //'ScheduleGame' => [],
+            //'StartGame' => [],
+            //'AddPointsForTeamInGame' => [],
+            //'EndGame' => [],
 
-            'RemovePlayerFromTeam' => [],
-            'RescheduleGame' => [],
-            'CancelScheduledGame' => [],
+            //'RemovePlayerFromTeam' => [],
+            //'RescheduleGame' => [],
+            //'CancelScheduledGame' => [],
         ],
         'aggregates' => [
-            'Player' => [ /*things specific to a player*/ ],
-            'Team' => [ /*things specific to a team*/ ],
-            'TeamPlayer' => [ /*things specific to a player on a team*/ ],
-            'ScheduledGame' => [ /*things specific to a scheduled game between teams*/ ],
-            'Game' => [ /*things specific to a game played between teams*/ ],
+            [
+                'aggregateName' => 'Player',
+                /*things specific to a player*/
+            ],
+            [
+                'aggregateName' => 'Team',
+                /*things specific to a team*/
+            ],
+            [
+                'aggregateName' => 'TeamPlayer',
+                /*things specific to a player on a team*/
+            ],
+            [
+                'aggregateName' => 'ScheduledGame',
+                /*things specific to a scheduled game between teams*/
+            ],
+            [
+                'aggregateName' => 'Game',
+                /*things specific to a game played between teams*/
+            ],
         ],
         'commands' => [
-            'CreatePlayer' => [
+            [
+                'commandName' => 'CreatePlayer',
                 'aggregateName' => 'Player',
                 'commandProps' => ['playerName'],
                 'event' => [
@@ -36,7 +57,8 @@ return [
                     ],
                 ],
             ],
-            'CreateTeam' => [
+            [
+                'commandName' => 'CreateTeam',
                 'aggregateName' => 'Team',
                 'commandProps' => ['teamName'],
                 'event' => [
@@ -49,7 +71,8 @@ return [
                     ],
                 ],
             ],
-            'AddPlayerToTeam' => [
+            [
+                'commandName' => 'AddPlayerToTeam',
                 'aggregateName' => 'TeamPlayer',
                 'commandProps' => ['playerId', 'teamId'],
                 'event' => [
@@ -62,7 +85,8 @@ return [
                     ],
                 ],
             ],
-            'ScheduleGame' => [
+            [
+                'commandName' => 'ScheduleGame',
                 'aggregateName' => 'ScheduledGame',
                 'commandProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime'],
                 'event' => [
@@ -73,17 +97,24 @@ return [
                     ],
                     'listeners' => [
                         //team has a game scheduled at "home"
-                        'NotifyHomeTeamFollowersOfScheduledGame' => [
+                        [
+                            'listenerName' => 'NotifyHomeTeamFollowersOfScheduledGame',
                             'commands' => [
-                                'NotifyHomeTeamFollowersOfScheduledGame' => [
-                                    'commandProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime'],
+                                [
+                                    'commandName' => 'NotifyHomeTeamFollowersOfScheduledGame',
+                                    'commandProps' => [
+                                        'homeTeamId',
+                                        'awayTeamId',
+                                        'scheduledDateTime'
+                                    ],
                                 ],
                             ],
                         ],
                     ],
                 ],
             ],
-            'StartGame' => [
+            [
+                'commandName' => 'StartGame',
                 'aggregateName' => 'Game',
                 'commandProps' => ['scheduledGameId'],
                 'event' => [
@@ -96,7 +127,8 @@ return [
                     ],
                 ],
             ],
-            'EndGame' => [
+            [
+                'commandName' => 'EndGame',
                 'aggregateName' => 'Game',
                 'commandProps' => [],
                 'event' => [
@@ -109,7 +141,8 @@ return [
                     ],
                 ],
             ],
-            'AddPointsForTeamInGame' => [
+            [
+                'commandName' => 'AddPointsInTeamForGame',
                 'aggregateName' => 'Game',
                 'commandProps' => ['gameId', 'teamId', 'points'],
                 'event' => [
@@ -124,7 +157,8 @@ return [
             ],
 
             /* modifications */
-            'RemovePlayerFromTeam' => [
+            [
+                'commandName' => 'RemovePlayerFromTeam',
                 'aggregateName' => 'TeamPlayer',
                 'commandProps' => ['playerId', 'teamId'],
                 'event' => [
@@ -137,7 +171,8 @@ return [
                     ],
                 ],
             ],
-            'RescheduleGame' => [
+            [
+                'commandName' => 'RescheduleGame',
                 'aggregateName' => 'ScheduledGame',
                 'commandProps' => ['scheduledGameId', 'homeTeamId', 'awayTeamId', 'newScheduledDateTime'],
                 'event' => [
@@ -150,7 +185,8 @@ return [
                     ],
                 ],
             ],
-            'CancelScheduledGame' => [
+            [
+                'commandName' => 'CancelScheduledGame',
                 'aggregateName' => 'ScheduledGame',
                 'commandProps' => ['scheduledGameId', 'reason'],
                 'event' => [
