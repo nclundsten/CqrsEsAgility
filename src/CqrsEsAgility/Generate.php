@@ -9,6 +9,7 @@ use CqrsEsAgility\Config\NamespacesConfig;
 use CqrsEsAgility\Config\NamespaceConfig;
 use CqrsEsAgility\Config\ActionConfig;
 use CqrsEsAgility\Config\ListenerConfig;
+use CqrsEsAgility\Config\ProjectorConfig;
 
 class Generate extends AbstractGenerate
 {
@@ -73,17 +74,13 @@ class Generate extends AbstractGenerate
         $this->aggregate->addAggregateEvent($aggregateName, $eventName);
 
         //an event *MAY* have listeners
-        if (count($eventConfig['listeners'])) {
-            foreach ($eventConfig['listeners'] as $listenerConfig) {
-                $this->addEventListener($listenerConfig);
-            }
+        foreach ($eventConfig['listeners'] as $listenerConfig) {
+            $this->addEventListener($listenerConfig);
         }
 
         //an event *MAY* have projectors
-        if (count($eventConfig['projectors'])) {
-            foreach ($eventConfig['projectors'] as $projectorName) {
-                $this->addEventProjector($projectorName, $eventName);
-            }
+        foreach ($eventConfig['projectors'] as $projectorConfig) {
+            $this->addEventProjector($projectorConfig);
         }
     }
 
@@ -97,9 +94,9 @@ class Generate extends AbstractGenerate
         }
     }
 
-    protected function addEventProjector(string $projectorName, string $eventName)
+    protected function addEventProjector(ProjectorConfig $projectorConfig)
     {
-        $this->projector->addProjector($projectorName, $eventName);
+        $this->projector->addProjector($projectorConfig);
     }
 }
 

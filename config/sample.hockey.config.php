@@ -51,7 +51,7 @@ return [
                     'eventName' => 'PlayerWasCreated',
                     'eventProps' => ['playerName'],
                     'projectors' => [
-                        'Player',
+                        ['projectorName' => 'Player']
                     ],
                     'listeners' => [
                     ],
@@ -65,7 +65,7 @@ return [
                     'eventName' => 'TeamWasCreated',
                     'eventProps' => ['teamName'],
                     'projectors' => [
-                        'Team',
+                        ['projectorName' => 'Team']
                     ],
                     'listeners' => [
                     ],
@@ -79,7 +79,7 @@ return [
                     'eventName' => 'PlayerWasAddedToTeam',
                     'eventProps' => ['playerId', 'addedDateTime'],
                     'projectors' => [
-                        'TeamPlayer',
+                        ['projectorName' => 'TeamPlayer']
                     ],
                     'listeners' => [
                     ],
@@ -93,7 +93,7 @@ return [
                     'eventName' => 'GameWasScheduled',
                     'eventProps' => ['homeTeamId', 'awayTeamId', 'scheduledDateTime'],
                     'projectors' => [
-                        'GameSchedule',
+                        ['projectorName' => 'GameSchedule']
                     ],
                     'listeners' => [
                         //team has a game scheduled at "home"
@@ -121,7 +121,7 @@ return [
                     'eventName' => 'GameWasStarted',
                     'eventProps' => ['scheduledGameId'],
                     'projectors' => [
-                        'Game',
+                        ['projectorName' => 'Game']
                     ],
                     'listeners' => [
                     ],
@@ -135,7 +135,7 @@ return [
                     'eventName' => 'GameWasEnded',
                     'eventProps' => ['gameId', 'dateTime'],
                     'projectors' => [
-                        'Game',
+                        ['projectorName' => 'Game']
                     ],
                     'listeners' => [
                     ],
@@ -149,7 +149,7 @@ return [
                     'eventName' => 'PointsForTeamInGameWereAdded',
                     'eventProps' => ['gameId', 'teamId', 'points'],
                     'projectors' => [
-                        'Game',
+                        ['projectorName' => 'Game']
                     ],
                     'listeners' => [
                     ],
@@ -165,7 +165,7 @@ return [
                     'eventName' => 'PlayerWasRemovedFromTeam',
                     'eventProps' => ['playerId'],
                     'projectors' => [
-                        'TeamPlayer',
+                        ['projectorName' => 'TeamPlayer']
                     ],
                     'listeners' => [
                     ],
@@ -179,7 +179,7 @@ return [
                     'eventName' => 'GameWasRescheduled',
                     'eventProps' => ['scheduledGameId', 'homeTeamId', 'awayTeamId', 'newScheduledDateTime'],
                     'projectors' => [
-                        'GameSchedule',
+                        ['projectorName' => 'GameSchedule']
                     ],
                     'listeners' => [
                     ],
@@ -193,7 +193,7 @@ return [
                     'eventName' => 'GameWasCancelled',
                     'eventProps' => ['scheduledGameId', 'reason'],
                     'projectors' => [
-                        'GameSchedule',
+                        ['projectorName' => 'GameSchedule']
                     ],
                     'listeners' => [
                     ],

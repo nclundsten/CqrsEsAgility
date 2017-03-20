@@ -10,11 +10,16 @@ use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Generator\ParameterGenerator;
 use Interop\Container\ContainerInterface;
 use CqrsEsAgility\Files\Exception\ClassNotFound;
+use CqrsEsAgility\Config\ProjectorConfig;
 
 class Projector extends GeneratorAbstract
 {
-    public function addProjector(string $projectorName, string $eventName)
+    public function addProjector(ProjectorConfig $projectorConfig)
     {
+
+        $projectorName = $projectorConfig['projectorName'];
+        $eventName = $projectorConfig->projectors->event['eventName'];
+
         try {
             /* @var ClassGenerator $class */
             $class = $this->getClass($this->getFqcn($projectorName, 'projector'));

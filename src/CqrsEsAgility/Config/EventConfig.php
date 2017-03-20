@@ -15,8 +15,8 @@ class EventConfig extends \ArrayObject
         parent::__construct([
             'eventName' => null,
             'eventProps' => [],
-            'listeners' => [],
-            'projectors' => [],
+            'listeners' => null,
+            'projectors' => null,
             'command' => null,
         ]);
 
@@ -47,9 +47,13 @@ class EventConfig extends \ArrayObject
                 }
                 break;
             case 'projectors':
+                if ($val instanceOf ProjectorsConfig) {
+                    break;
+                }
                 if (!is_array($val)) {
                     throw new \Exception('expected projectors as array');
                 }
+                $val = new ProjectorsConfig($val, $this);
                 break;
             case 'listeners':
                 if ($val instanceOf ListenersConfig) {
