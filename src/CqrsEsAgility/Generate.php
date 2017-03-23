@@ -41,24 +41,24 @@ class Generate extends AbstractGenerate
 
     protected function addAction(ActionConfig $actionConfig)
     {
-        $this->action->addAction($actionConfig);
+        $this->action()->addAction($actionConfig);
     }
 
     protected function addAggregate(AggregateConfig $aggregateConfig)
     {
-        $this->aggregate->addAggregate($aggregateConfig);
+        $this->aggregate()->addAggregate($aggregateConfig);
     }
 
     protected function addCommand(CommandConfig $commandConfig)
     {
-        $this->command->addCommand($commandConfig);
+        $this->command()->addCommand($commandConfig);
 
         //a command *MAY* have an associated aggregate
         if ($commandConfig['aggregateName']) {
-            $this->aggregate->addAggregateCommand($commandConfig);
+            $this->aggregate()->addAggregateCommand($commandConfig);
         }
 
-        $this->commandHandler->addCommandHandler($commandConfig);
+        $this->commandHandler()->addCommandHandler($commandConfig);
 
         //a command *MAY* have an associated event
         if ($commandConfig['event']) {
@@ -70,8 +70,8 @@ class Generate extends AbstractGenerate
     {
         $aggregateName = $eventConfig->command['aggregateName'];
         $eventName = $eventConfig['eventName'];
-        $this->event->addEvent($eventName, $eventConfig['eventProps']);
-        $this->aggregate->addAggregateEvent($aggregateName, $eventName);
+        $this->event()->addEvent($eventName, $eventConfig['eventProps']);
+        $this->aggregate()->addAggregateEvent($aggregateName, $eventName);
 
         //an event *MAY* have listeners
         foreach ($eventConfig['listeners'] as $listenerConfig) {
@@ -86,7 +86,7 @@ class Generate extends AbstractGenerate
 
     protected function addEventListener(ListenerConfig $listenerConfig)
     {
-        $this->listener->addEventListener($listenerConfig);
+        $this->listener()->addEventListener($listenerConfig);
 
         //a listener *MAY* use the command bus to dispatch commands
         foreach ($listenerConfig['commands'] as $commandConfig) {
@@ -96,7 +96,7 @@ class Generate extends AbstractGenerate
 
     protected function addEventProjector(ProjectorConfig $projectorConfig)
     {
-        $this->projector->addProjector($projectorConfig);
+        $this->projector()->addProjector($projectorConfig);
     }
 }
 

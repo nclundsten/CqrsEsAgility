@@ -112,7 +112,7 @@ class Projector extends GeneratorAbstract
     {
         $method = $projectorsClass->getMethod('__invoke');
         $bodySplit = explode("\n", $method->getBody());
-        //pop the end off (closes array)
+        //pop the end off
         $end = array_pop($bodySplit);
         $bodySplit[] = "    " . "new " . $this->formatClassName($projectorName, 'projector') ."(),";
         $bodySplit[] = $end;

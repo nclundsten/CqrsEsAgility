@@ -16,28 +16,28 @@ use Zend\Code\Generator\ClassGenerator;
 abstract class AbstractGenerate
 {
     /* @var FilesCollection */
-    public $files;
+    private $files;
 
     /* @var Command */
-    protected $command;
+    private $command;
 
     /* @var CommandHandler */
-    protected $commandHandler;
+    private $commandHandler;
 
     /* @var Aggregate */
-    protected $aggregate;
+    private $aggregate;
 
     /* @var Event */
-    protected $event;
+    private $event;
 
     /* @var Listener */
-    protected $listener;
+    private $listener;
 
     /* @var Projector */
-    protected $projector;
+    private $projector;
 
     /* @var Action */
-    protected $action;
+    private $action;
 
     public function __construct(
         FilesCollection $files,
@@ -57,6 +57,41 @@ abstract class AbstractGenerate
         $this->listener = $listener;
         $this->projector = $projector;
         $this->action = $action;
+    }
+
+    public function command() : Command
+    {
+        return $this->command;
+    }
+
+    public function commandHandler() : CommandHandler
+    {
+        return $this->commandHandler;
+    }
+
+    public function aggregate() : Aggregate
+    {
+        return $this->aggregate;
+    }
+
+    public function event() : Event
+    {
+        return $this->event;
+    }
+
+    public function listener() : Listener
+    {
+        return $this->listener;
+    }
+
+    public function projector() : Projector
+    {
+        return $this->projector;
+    }
+
+    public function action() : Action
+    {
+        return $this->action;
     }
 
     protected function setNamespace(string $namespaceName)
